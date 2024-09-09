@@ -343,11 +343,14 @@ const App = () => {
       {recommendedModel && (
         <section className="section">
           <h3>Your recommended size: Tenaya {recommendedModel}</h3>
-          <p>UK: {selectedSize}</p>
-          <p>USM: {equivalents.USM}</p>
-          <p>USW: {equivalents.USW}</p>
-          <p>EU: {equivalents.EU}</p>
-          <p>CM: {equivalents.CM}</p>
+          <p>
+            {selectedSizeType}: {selectedSize}
+          </p>
+          {Object.keys(equivalents).map((type) => (
+            <p key={type}>
+              {type}: {equivalents[type]}
+            </p>
+          ))}
           <h4>
             Previous climbing shoes: {selectedBrand} {selectedModel}{" "}
             {selectedSizeType} {selectedSize} <br />

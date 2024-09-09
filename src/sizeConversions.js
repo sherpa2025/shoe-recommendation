@@ -54,9 +54,6 @@ export const sizeConversions = {
       "11 ½": "13 ½",
       12: "14",
       "12 ½": "14 ½",
-      13: "15",
-      "13 ½": "",
-      14: "",
     },
     EU: {
       1: "33.0",
@@ -117,6 +114,7 @@ export const sizeConversions = {
       14: "31.1",
     },
   },
+
   USM: {
     UK: {
       2: "1",
@@ -572,45 +570,10 @@ export const sizeConversions = {
   },
 };
 
-export const getEquivalentSizes = (size, system) => {
-  let equivalents = {};
-
-  if (system === "UK") {
-    equivalents = {
-      USM: sizeConversions.UK.USM[size],
-      USW: sizeConversions.UK.USW[size],
-      EU: sizeConversions.UK.EU[size],
-      CM: sizeConversions.UK.CM[size],
-    };
-  } else if (system === "USM") {
-    equivalents = {
-      UK: sizeConversions.USM.UK[size],
-      USW: sizeConversions.USM.USW[size],
-      EU: sizeConversions.USM.EU[size],
-      CM: sizeConversions.USM.CM[size],
-    };
-  } else if (system === "USW") {
-    equivalents = {
-      UK: sizeConversions.USW.UK[size],
-      USM: sizeConversions.USW.USM[size],
-      EU: sizeConversions.USW.EU[size],
-      CM: sizeConversions.USW.CM[size],
-    };
-  } else if (system === "EU") {
-    equivalents = {
-      UK: sizeConversions.EU.UK[size],
-      USM: sizeConversions.EU.USM[size],
-      USW: sizeConversions.EU.USW[size],
-      CM: sizeConversions.EU.CM[size],
-    };
-  } else if (system === "CM") {
-    equivalents = {
-      UK: sizeConversions.CM.UK[size],
-      USM: sizeConversions.CM.USM[size],
-      USW: sizeConversions.CM.USW[size],
-      EU: sizeConversions.CM.EU[size],
-    };
-  }
-
-  return equivalents;
+export const getEquivalentSizes = (size, sizeType) => {
+  const conversions = sizeConversions[sizeType];
+  return Object.keys(conversions).reduce((acc, key) => {
+    acc[key] = conversions[key][size] || "N/A";
+    return acc;
+  }, {});
 };

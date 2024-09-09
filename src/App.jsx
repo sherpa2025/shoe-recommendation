@@ -321,7 +321,7 @@ const App = () => {
         </section>
       )}
 
-      {allSelectionsMade && selectedBrand !== "Tenaya" && (
+      {allSelectionsMade && (
         <section className="section">
           <h3>Recommended Tenaya Models</h3>
           <div className="options">

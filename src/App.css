@@ -1,0 +1,30 @@
+.section {
+  margin-bottom: 20px;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.sizes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 0;
+  justify-content: start;
+}
+
+.option,
+.size-option {
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  text-align: center;
+}
+
+.option.selected,
+.size-option.selected {
+  border-color: #007bff;
+  background-color: #e7f0ff;
+}

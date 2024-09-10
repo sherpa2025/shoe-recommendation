@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
-import { getEquivalentSizes } from "./sizeConversions";
+import { getEquivalentSizes, getFinalSizes } from "./sizeConversions";
+import { getRecommendation } from "./recommendationLogic";
 
 const App = () => {
   const [selectedBrand, setSelectedBrand] = useState(null);
@@ -8,6 +9,8 @@ const App = () => {
   const [selectedSizeType, setSelectedSizeType] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [recommendedModel, setRecommendedModel] = useState(null);
+  const [userUkSize, setUserUkSize] = useState(null);
+  const [recommendedUkSize, setRecommendedUkSize] = useState(null);
 
   const brands = {
     Sportiva: [
@@ -35,7 +38,6 @@ const App = () => {
       "Maestro",
       "Chimera",
     ],
-
     Tenaya: [
       "Oasi",
       "Oasi Lv",
@@ -216,6 +218,7 @@ const App = () => {
 
   const handleTenayaModelClick = (model) => {
     setRecommendedModel(model);
+    setRecommendedUkSize(null); // Clear previous parsed size
   };
 
   const handleSizeTypeClick = (sizeType) => {
@@ -225,9 +228,22 @@ const App = () => {
   };
 
   const handleSizeClick = (size) => {
+    const equivalents = getEquivalentSizes(size, selectedSizeType);
     setSelectedSize(size);
+    setUserUkSize(equivalents.UK); // Store the UK size
     setRecommendedModel(null); // Reset recommendation when size changes
   };
+
+  useEffect(() => {
+    if (recommendedModel && userUkSize && selectedBrand) {
+      const recommendation = getRecommendation(
+        selectedBrand,
+        userUkSize,
+        recommendedModel
+      );
+      setRecommendedUkSize(recommendation.recommendedSize);
+    }
+  }, [recommendedModel, userUkSize, selectedBrand]);
 
   const renderSizes = () => {
     if (selectedSizeType) {
@@ -249,12 +265,12 @@ const App = () => {
     }
     return null;
   };
-
   const allSelectionsMade =
     selectedBrand && selectedModel && selectedSizeType && selectedSize;
 
-  const equivalents = allSelectionsMade
-    ? getEquivalentSizes(selectedSize, selectedSizeType)
+  // Use the UK size to get size equivalents for final recommendation shoe size
+  const displayEquivalents = recommendedUkSize
+    ? getFinalSizes(recommendedUkSize)
     : {};
 
   return (
@@ -356,26 +372,33 @@ const App = () => {
               boxSizing: "border-box",
             }}
           >
-            {["UK", "USM", "USW", "EU", "CM"].map((type) => (
-              <p key={type}>
-                <span
-                  style={{
-                    textDecoration:
-                      selectedSizeType === type ? "underline" : "none",
-                  }}
-                >
-                  {type}:{" "}
-                  {selectedSizeType === type ? selectedSize : equivalents[type]}
-                </span>
-              </p>
-            ))}
+            {["UK", "USM", "USW", "EU", "CM"].map((type) => {
+              // Determine the size to display for each type
+              const sizeToDisplay =
+                type === selectedSizeType
+                  ? displayEquivalents[type] || "N/A"
+                  : displayEquivalents[type] || "N/A";
+
+              return (
+                <p key={type}>
+                  <span
+                    style={{
+                      textDecoration:
+                        type === selectedSizeType ? "underline" : "none", // Underline the selected size type
+                    }}
+                  >
+                    {type}: {sizeToDisplay}
+                  </span>
+                </p>
+              );
+            })}
           </div>
 
           <h4>
             Previous climbing shoes: {selectedBrand} {selectedModel}{" "}
             {selectedSizeType} {selectedSize}
             <br />
-            New Tenaya climbing shoes: Tenaya {recommendedModel}
+            New Tenaya climbing shoes: {recommendedModel}
           </h4>
         </section>
       )}

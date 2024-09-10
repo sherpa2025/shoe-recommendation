@@ -28,12 +28,8 @@ const sizeData = [
   { uk: "14", usm: "15", usw: "", eu: "49.6", cm: "31.1" },
 ];
 
-// Function to find the equivalent sizes
-export const getEquivalentSizes = (size, type) => {
-  const sizeEntry = sizeData.find(
-    (entry) => entry[type.toLowerCase()] === size
-  );
-
+// Helper function to create size equivalents or "N/A"
+const createSizeEquivalent = (sizeEntry) => {
   if (sizeEntry) {
     return {
       UK: sizeEntry.uk,
@@ -52,3 +48,79 @@ export const getEquivalentSizes = (size, type) => {
     CM: "N/A",
   };
 };
+
+// Function to find the equivalent sizes based on a given size and type
+export const getEquivalentSizes = (size, type) => {
+  const sizeEntry = sizeData.find(
+    (entry) => entry[type.toLowerCase()] === size
+  );
+
+  return createSizeEquivalent(sizeEntry);
+};
+
+// Function to find the equivalent sizes based on a UK size
+export const getFinalSizes = (ukSize) => {
+  const sizeEntry = sizeData.find((entry) => entry.uk === ukSize);
+
+  return createSizeEquivalent(sizeEntry);
+};
+
+// street model
+// {
+//   "beginners": {
+//     "oasi": "0",
+//     "oasi lv": "0",
+//     "iati": "0",
+//     "tarifa": "0",
+//     "mundaka": "0",
+//     "indalo": "0",
+//     "mastia": "-0.5",
+//     "ra": "0.5",
+//     "ra woman": "0.5",
+//     "inti": "0.5",
+//     "masai": "0.5",
+//     "tanta": "0.5"
+//   },
+//   "prolonged use": {
+//     "oasi": "-0.5",
+//     "oasi lv": "-0.5",
+//     "iati": "-0.5",
+//     "tarifa": "-0.5",
+//     "mundaka": "-0.5",
+//     "indalo": "-0.5",
+//     "mastia": "-1",
+//     "ra": "0",
+//     "ra woman": "0",
+//     "inti": "0",
+//     "masai": "0",
+//     "tanta": "0"
+//   },
+//   "comfort fit": {
+//     "oasi": "-1",
+//     "oasi lv": "-1",
+//     "iati": "-1",
+//     "tarifa": "-1",
+//     "mundaka": "-1",
+//     "indalo": "-1",
+//     "mastia": "-1.5",
+//     "ra": "-0.5",
+//     "ra woman": "-0.5",
+//     "inti": "-0.5",
+//     "masai": "-0.5",
+//     "tanta": "-0.5"
+//   },
+//   "tighter fit": {
+//     "oasi": "-1.5",
+//     "oasi lv": "-1.5",
+//     "iati": "-1.5",
+//     "tarifa": "-1.5",
+//     "mundaka": "-1.5",
+//     "indalo": "-1.5",
+//     "mastia": "-2",
+//     "ra": "-1",
+//     "ra woman": "-1",
+//     "inti": "-1",
+//     "masai": "-1",
+//     "tanta": "-1"
+//   }
+// }

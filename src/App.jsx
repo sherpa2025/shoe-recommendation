@@ -343,17 +343,25 @@ const App = () => {
       {recommendedModel && (
         <section className="section">
           <h3>Your recommended size: Tenaya {recommendedModel}</h3>
-          <p>
-            {selectedSizeType}: {selectedSize}
-          </p>
-          {Object.keys(equivalents).map((type) => (
+
+          {["UK", "USM", "USW", "EU", "CM"].map((type) => (
             <p key={type}>
-              {type}: {equivalents[type]}
+              <span
+                style={{
+                  textDecoration:
+                    selectedSizeType === type ? "underline" : "none",
+                }}
+              >
+                {type}:{" "}
+                {selectedSizeType === type ? selectedSize : equivalents[type]}
+              </span>
             </p>
           ))}
+
           <h4>
             Previous climbing shoes: {selectedBrand} {selectedModel}{" "}
-            {selectedSizeType} {selectedSize} <br />
+            {selectedSizeType} {selectedSize}
+            <br />
             New Tenaya climbing shoes: Tenaya {recommendedModel}
           </h4>
         </section>

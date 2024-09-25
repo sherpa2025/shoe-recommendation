@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import { getEquivalentSizes, getFinalSizes } from "./sizeConversions";
-import { getRecommendation } from "./recommendationLogic";
+import { getRecommendation } from "./climbingShoeRecommendation";
 
 const App = () => {
   const [selectedBrand, setSelectedBrand] = useState(null);
@@ -11,6 +11,8 @@ const App = () => {
   const [recommendedModel, setRecommendedModel] = useState(null);
   const [userUkSize, setUserUkSize] = useState(null);
   const [recommendedUkSize, setRecommendedUkSize] = useState(null);
+  const [currentSection, setCurrentSection] = useState(null);
+  const [comfortPreference, setComfortPreference] = useState(null);
 
   const brands = {
     Sportiva: [
@@ -55,6 +57,12 @@ const App = () => {
   };
 
   const sizeTypes = ["UK", "USM", "USW", "EU", "CM"];
+  const comfortOptions = [
+    "Beginners",
+    "Prolonged Use",
+    "Comfort Fit",
+    "Tighter Fit",
+  ];
 
   const sizes = {
     UK: [
@@ -201,6 +209,15 @@ const App = () => {
     ],
   };
 
+  const resetStates = () => {
+    setSelectedBrand(null);
+    setSelectedModel(null);
+    setSelectedSizeType(null);
+    setSelectedSize(null);
+    setRecommendedModel(null);
+    setComfortPreference(null);
+  };
+
   const handleBrandClick = (brand) => {
     setSelectedBrand(brand);
     setSelectedModel(null);
@@ -273,188 +290,227 @@ const App = () => {
     ? getFinalSizes(recommendedUkSize)
     : {};
 
+  const handleClimbingSectionClick = () => {
+    resetStates();
+    setCurrentSection("climbing");
+  };
+
+  const handleStreetSectionClick = () => {
+    resetStates();
+    setCurrentSection("street");
+  };
+
+  const handleComfortPreferenceClick = (option) => {
+    setComfortPreference(option);
+  };
+
   return (
     <div className="app">
       <h1>Shoe Recommendation System</h1>
 
-      <section className="section">
-        <h3>Select brand of your previous model</h3>
-        <div className="options">
-          {Object.keys(brands).map((brand) => (
-            <button
-              key={brand}
-              className={`option ${selectedBrand === brand ? "selected" : ""}`}
-              onClick={() => handleBrandClick(brand)}
-            >
-              {brand}
-            </button>
-          ))}
-        </div>
-      </section>
+      {/* Toggle buttons */}
+      <div className="toggle-buttons">
+        <button onClick={handleClimbingSectionClick}>
+          According to the previous used climbing shoe
+        </button>
+        <button onClick={handleStreetSectionClick}>
+          According to street shoe
+        </button>
+      </div>
 
-      {selectedBrand && (
-        <section className="section">
-          <h3>Select your previous model of {selectedBrand}</h3>
-          <div className="options">
-            {brands[selectedBrand].map((model) => (
-              <button
-                key={model}
-                className={`option ${
-                  selectedModel === model ? "selected" : ""
-                }`}
-                onClick={() => handleModelClick(model)}
-              >
-                {model}
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
+      {currentSection === "climbing" && (
+        <div>
+          <section className="section">
+            <h3>Select brand of your previous model</h3>
+            <div className="options">
+              {Object.keys(brands).map((brand) => (
+                <button
+                  key={brand}
+                  className={`option ${
+                    selectedBrand === brand ? "selected" : ""
+                  }`}
+                  onClick={() => handleBrandClick(brand)}
+                >
+                  {brand}
+                </button>
+              ))}
+            </div>
+          </section>
 
-      {selectedModel && (
-        <section className="section">
-          <h3>Select the size of your previous model</h3>
-          <h3>Size type</h3>
-          <div className="options">
-            {sizeTypes.map((sizeType) => (
-              <button
-                key={sizeType}
-                className={`option ${
-                  selectedSizeType === sizeType ? "selected" : ""
-                }`}
-                onClick={() => handleSizeTypeClick(sizeType)}
-              >
-                {sizeType}
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {selectedSizeType && (
-        <section className="section">
-          <h3>Size</h3>
-          {renderSizes()}
-        </section>
-      )}
-
-      {allSelectionsMade && (
-        <section className="section">
-          <h3>Recommended Tenaya Models</h3>
-          <div className="options">
-            {brands.Tenaya.map((model) => (
-              <button
-                key={model}
-                className={`option ${
-                  recommendedModel === model ? "selected" : ""
-                }`}
-                onClick={() => handleTenayaModelClick(model)}
-              >
-                {model}
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {recommendedModel && (
-        <section className="section">
-          <h3>Your recommended size: Tenaya {recommendedModel}</h3>
-          <div
-            style={{
-              // this styling needs to be changed later to be more responsive on screen size
-              backgroundColor: "#333",
-              color: "white",
-              padding: "10px",
-              borderRadius: "8px",
-              width: "calc(25% - 40px)",
-              height: "calc(25% - 40px)",
-              boxSizing: "border-box",
-            }}
-          >
-            {["UK", "USM", "USW", "EU", "CM"].map((type) => {
-              // Determine the size to display for each type
-              const sizeToDisplay =
-                type === selectedSizeType
-                  ? displayEquivalents[type] || "N/A"
-                  : displayEquivalents[type] || "N/A";
-
-              return (
-                <p key={type}>
-                  <span
-                    style={{
-                      textDecoration:
-                        type === selectedSizeType ? "underline" : "none", // Underline the selected size type
-                    }}
+          {selectedBrand && (
+            <section className="section">
+              <h3>Select your previous model of {selectedBrand}</h3>
+              <div className="options">
+                {brands[selectedBrand].map((model) => (
+                  <button
+                    key={model}
+                    className={`option ${
+                      selectedModel === model ? "selected" : ""
+                    }`}
+                    onClick={() => handleModelClick(model)}
                   >
-                    {type}: {sizeToDisplay}
-                  </span>
-                </p>
-              );
-            })}
-          </div>
+                    {model}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
 
-          <h4>
-            Previous climbing shoes: {selectedBrand} {selectedModel}{" "}
-            {selectedSizeType} {selectedSize}
-            <br />
-            New Tenaya climbing shoes: {recommendedModel}
-          </h4>
-        </section>
+          {selectedModel && (
+            <section className="section">
+              <h3>Select the size of your previous model</h3>
+              <h3>Size type</h3>
+              <div className="options">
+                {sizeTypes.map((sizeType) => (
+                  <button
+                    key={sizeType}
+                    className={`option ${
+                      selectedSizeType === sizeType ? "selected" : ""
+                    }`}
+                    onClick={() => handleSizeTypeClick(sizeType)}
+                  >
+                    {sizeType}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {selectedSizeType && (
+            <section className="section">
+              <h3>Size</h3>
+              {renderSizes()}
+            </section>
+          )}
+
+          {allSelectionsMade && (
+            <section className="section">
+              <h3>Choose your Tenaya Model</h3>
+              <div className="options">
+                {brands.Tenaya.map((model) => (
+                  <button
+                    key={model}
+                    className={`option ${
+                      recommendedModel === model ? "selected" : ""
+                    }`}
+                    onClick={() => handleTenayaModelClick(model)}
+                  >
+                    {model}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {recommendedModel && (
+            <section className="section">
+              <h3>Your recommended size: Tenaya {recommendedModel}</h3>
+              <div
+                style={{
+                  backgroundColor: "#333",
+                  color: "white",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  width: "calc(25% - 40px)",
+                  height: "calc(25% - 40px)",
+                  boxSizing: "border-box",
+                }}
+              >
+                {["UK", "USM", "USW", "EU", "CM"].map((type) => {
+                  const sizeToDisplay =
+                    type === selectedSizeType
+                      ? displayEquivalents[type] || "N/A"
+                      : displayEquivalents[type] || "N/A";
+
+                  return (
+                    <p key={type}>
+                      <span
+                        style={{
+                          textDecoration:
+                            type === selectedSizeType ? "underline" : "none",
+                        }}
+                      >
+                        {type}: {sizeToDisplay}
+                      </span>
+                    </p>
+                  );
+                })}
+              </div>
+
+              <h4>
+                Previous climbing shoes: {selectedBrand} {selectedModel}{" "}
+                {selectedSizeType} {selectedSize}
+                <br />
+                New Tenaya climbing shoes: {recommendedModel}
+              </h4>
+            </section>
+          )}
+        </div>
+      )}
+      {currentSection === "street" && (
+        <div>
+          <section className="section">
+            <h3>Select your size type</h3>
+            <div className="options">
+              {sizeTypes.map((sizeType) => (
+                <button
+                  key={sizeType}
+                  className={`option ${
+                    selectedSizeType === sizeType ? "selected" : ""
+                  }`}
+                  onClick={() => handleSizeTypeClick(sizeType)}
+                >
+                  {sizeType}
+                </button>
+              ))}
+            </div>
+          </section>
+          {selectedSizeType && (
+            <section className="section">
+              <h3>Size</h3>
+              {renderSizes()}
+            </section>
+          )}
+          {selectedSizeType && selectedSize && (
+            <section className="section">
+              <h3>Choose your Tenaya Model</h3>
+              <div className="options">
+                {brands.Tenaya.map((model) => (
+                  <button
+                    key={model}
+                    className={`option ${
+                      recommendedModel === model ? "selected" : ""
+                    }`}
+                    onClick={() => handleTenayaModelClick(model)}
+                  >
+                    {model}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+          {recommendedModel && (
+            <section className="section">
+              <h3>Select Comfort Preference</h3>
+              <div className="options">
+                {comfortOptions.map((option) => (
+                  <button
+                    key={option}
+                    className={`option ${
+                      comfortPreference === option ? "selected" : ""
+                    }`}
+                    onClick={() => handleComfortPreferenceClick(option)}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
       )}
     </div>
   );
 };
 
 export default App;
-
-// <!-- BEGIN Template/ajax/bloques-eleccion -->
-// <!-- RESULTADO -->
-// <!-- <h4>Aquí resultado de modelo-tenaya-nuevo = mundaka</h4> -->
-// <div class="resultado link-dark pb-3">
-//     <p class="fw-bold fs-pt-14">
-//         Your recommended size:
-//       Tenaya      <span class="modelo-tenaya-nuevo-anterior text-uppercase font-weight-bold"></span>
-//     </p>
-//     <div class="row">
-//         <div class="col-md-6">
-//             <div class="resultado-talla-recomendada w-100 p-3 fs-pt-14 btn-dark position-relative text-center" data-type="resultado" data-value="- ? -">- ? - </div>
-//         </div>
-//         <div class="col-md-6">
-//             <p class="border-primary p-2">This recommendation is based on the sizes purchased by customers like you and whether or not they returned.         </p>
-//         </div>
-//     </div>
-// </div>
-// <div id="datos-comparacion" class="datos-comparacion" data-comparacion-marcas-arr='{&quot;sportiva&quot;:{&quot;oasi&quot;:&quot;0&quot;,&quot;oasi lv&quot;:&quot;0&quot;,&quot;iati&quot;:&quot;0&quot;,&quot;mundaka&quot;:&quot;0&quot;,&quot;mastia&quot;:&quot;-0.5&quot;,&quot;tarifa&quot;:&quot;0&quot;,&quot;indalo&quot;:&quot;0&quot;,&quot;ra&quot;:&quot;0.5&quot;,&quot;ra woman&quot;:&quot;0.5&quot;,&quot;inti&quot;:&quot;0.5&quot;,&quot;masai&quot;:&quot;0.5&quot;,&quot;tanta&quot;:&quot;0&quot;},&quot;scarpa&quot;:{&quot;oasi&quot;:&quot;-1&quot;,&quot;oasi lv&quot;:&quot;-1&quot;,&quot;iati&quot;:&quot;-1&quot;,&quot;mundaka&quot;:&quot;-1&quot;,&quot;mastia&quot;:&quot;-1.5&quot;,&quot;tarifa&quot;:&quot;-1&quot;,&quot;indalo&quot;:&quot;-1&quot;,&quot;ra&quot;:&quot;-0.5&quot;,&quot;ra woman&quot;:&quot;-0.5&quot;,&quot;inti&quot;:&quot;-0.5&quot;,&quot;masai&quot;:&quot;-0.5&quot;,&quot;tanta&quot;:&quot;-1&quot;},&quot;tenaya&quot;:{&quot;oasi&quot;:&quot;0&quot;,&quot;oasi lv&quot;:&quot;0&quot;,&quot;iati&quot;:&quot;0&quot;,&quot;mundaka&quot;:&quot;0&quot;,&quot;mastia&quot;:&quot;-0.5&quot;,&quot;tarifa&quot;:&quot;0&quot;,&quot;indalo&quot;:&quot;-0.5&quot;,&quot;ra&quot;:&quot;0.5&quot;,&quot;ra woman&quot;:&quot;0.5&quot;,&quot;inti&quot;:&quot;0.5&quot;,&quot;masai&quot;:&quot;0.5&quot;,&quot;tanta&quot;:&quot;0&quot;}}' data-comparacion-zapatos-arr='{&quot;beginners&quot;:{&quot;oasi&quot;:&quot;0&quot;,&quot;oasi lv&quot;:&quot;0&quot;,&quot;iati&quot;:&quot;0&quot;,&quot;tarifa&quot;:&quot;0&quot;,&quot;mundaka&quot;:&quot;0&quot;,&quot;indalo&quot;:&quot;0&quot;,&quot;mastia&quot;:&quot;-0.5&quot;,&quot;ra&quot;:&quot;0.5&quot;,&quot;ra woman&quot;:&quot;0.5&quot;,&quot;inti&quot;:&quot;0.5&quot;,&quot;masai&quot;:&quot;0.5&quot;,&quot;tanta&quot;:&quot;0.5&quot;},&quot;prolonged use&quot;:{&quot;oasi&quot;:&quot;-0.5&quot;,&quot;oasi lv&quot;:&quot;-0.5&quot;,&quot;iati&quot;:&quot;-0.5&quot;,&quot;tarifa&quot;:&quot;-0.5&quot;,&quot;mundaka&quot;:&quot;-0.5&quot;,&quot;indalo&quot;:&quot;-0.5&quot;,&quot;mastia&quot;:&quot;-1&quot;,&quot;ra&quot;:&quot;0&quot;,&quot;ra woman&quot;:&quot;0&quot;,&quot;inti&quot;:&quot;0&quot;,&quot;masai&quot;:&quot;0&quot;,&quot;tanta&quot;:&quot;0&quot;},&quot;comfort fit&quot;:{&quot;oasi&quot;:&quot;-1&quot;,&quot;oasi lv&quot;:&quot;-1&quot;,&quot;iati&quot;:&quot;-1&quot;,&quot;tarifa&quot;:&quot;-1&quot;,&quot;mundaka&quot;:&quot;-1&quot;,&quot;indalo&quot;:&quot;-1&quot;,&quot;mastia&quot;:&quot;-1.5&quot;,&quot;ra&quot;:&quot;-0.5&quot;,&quot;ra woman&quot;:&quot;-0.5&quot;,&quot;inti&quot;:&quot;-0.5&quot;,&quot;masai&quot;:&quot;-0.5&quot;,&quot;tanta&quot;:&quot;-0.5&quot;},&quot;tighter fit&quot;:{&quot;oasi&quot;:&quot;-1.5&quot;,&quot;oasi lv&quot;:&quot;-1.5&quot;,&quot;iati&quot;:&quot;-1.5&quot;,&quot;tarifa&quot;:&quot;-1.5&quot;,&quot;mundaka&quot;:&quot;-1.5&quot;,&quot;indalo&quot;:&quot;-1.5&quot;,&quot;mastia&quot;:&quot;-2&quot;,&quot;ra&quot;:&quot;-1&quot;,&quot;ra woman&quot;:&quot;-1&quot;,&quot;inti&quot;:&quot;-1&quot;,&quot;masai&quot;:&quot;-1&quot;,&quot;tanta&quot;:&quot;-1&quot;}}' data-tallas-estandar-arr='[{&quot;uk&quot;:&quot;1&quot;,&quot;usm&quot;:&quot;2&quot;,&quot;usw&quot;:&quot;3&quot;,&quot;eu&quot;:&quot;33.0&quot;,&quot;cm&quot;:&quot;20.2&quot;},{&quot;uk&quot;:&quot;1 \u00bd&quot;,&quot;usm&quot;:&quot;2 \u00bd&quot;,&quot;usw&quot;:&quot;3 \u00bd&quot;,&quot;eu&quot;:&quot;33.6&quot;,&quot;cm&quot;:&quot;20.6&quot;},{&quot;uk&quot;:&quot;2&quot;,&quot;usm&quot;:&quot;3&quot;,&quot;usw&quot;:&quot;4&quot;,&quot;eu&quot;:&quot;34.3&quot;,&quot;cm&quot;:&quot;21.0&quot;},{&quot;uk&quot;:&quot;2 \u00bd&quot;,&quot;usm&quot;:&quot;3 \u00bd&quot;,&quot;usw&quot;:&quot;4 \u00bd&quot;,&quot;eu&quot;:&quot;34.9&quot;,&quot;cm&quot;:&quot;21.4&quot;},{&quot;uk&quot;:&quot;3&quot;,&quot;usm&quot;:&quot;4&quot;,&quot;usw&quot;:&quot;5&quot;,&quot;eu&quot;:&quot;35.6&quot;,&quot;cm&quot;:&quot;21.8&quot;},{&quot;uk&quot;:&quot;3 \u00bd&quot;,&quot;usm&quot;:&quot;4 \u00bd&quot;,&quot;usw&quot;:&quot;5 \u00bd&quot;,&quot;eu&quot;:&quot;36.2&quot;,&quot;cm&quot;:&quot;22.3&quot;},{&quot;uk&quot;:&quot;4&quot;,&quot;usm&quot;:&quot;5&quot;,&quot;usw&quot;:&quot;6&quot;,&quot;eu&quot;:&quot;36.8&quot;,&quot;cm&quot;:&quot;22.7&quot;},{&quot;uk&quot;:&quot;4 \u00bd&quot;,&quot;usm&quot;:&quot;5 \u00bd&quot;,&quot;usw&quot;:&quot;6 \u00bd&quot;,&quot;eu&quot;:&quot;37.5&quot;,&quot;cm&quot;:&quot;23.1&quot;},{&quot;uk&quot;:&quot;5&quot;,&quot;usm&quot;:&quot;6&quot;,&quot;usw&quot;:&quot;7&quot;,&quot;eu&quot;:&quot;38.1&quot;,&quot;cm&quot;:&quot;23.5&quot;},{&quot;uk&quot;:&quot;5 \u00bd&quot;,&quot;usm&quot;:&quot;6 \u00bd&quot;,&quot;usw&quot;:&quot;7 \u00bd&quot;,&quot;eu&quot;:&quot;38.8&quot;,&quot;cm&quot;:&quot;24.0&quot;},{&quot;uk&quot;:&quot;6&quot;,&quot;usm&quot;:&quot;7&quot;,&quot;usw&quot;:&quot;8&quot;,&quot;eu&quot;:&quot;39.4&quot;,&quot;cm&quot;:&quot;24.4&quot;},{&quot;uk&quot;:&quot;6 \u00bd&quot;,&quot;usm&quot;:&quot;7 \u00bd&quot;,&quot;usw&quot;:&quot;8 \u00bd&quot;,&quot;eu&quot;:&quot;40.0&quot;,&quot;cm&quot;:&quot;24.8&quot;},{&quot;uk&quot;:&quot;7&quot;,&quot;usm&quot;:&quot;8&quot;,&quot;usw&quot;:&quot;9&quot;,&quot;eu&quot;:&quot;40.7&quot;,&quot;cm&quot;:&quot;25.2&quot;},{&quot;uk&quot;:&quot;7 \u00bd&quot;,&quot;usm&quot;:&quot;8 \u00bd&quot;,&quot;usw&quot;:&quot;9 \u00bd&quot;,&quot;eu&quot;:&quot;41.4&quot;,&quot;cm&quot;:&quot;25.6&quot;},{&quot;uk&quot;:&quot;8&quot;,&quot;usm&quot;:&quot;9&quot;,&quot;usw&quot;:&quot;10&quot;,&quot;eu&quot;:&quot;42.0&quot;,&quot;cm&quot;:&quot;26.1&quot;},{&quot;uk&quot;:&quot;8 \u00bd&quot;,&quot;usm&quot;:&quot;9 \u00bd&quot;,&quot;usw&quot;:&quot;10 \u00bd&quot;,&quot;eu&quot;:&quot;42.6&quot;,&quot;cm&quot;:&quot;26.5&quot;},{&quot;uk&quot;:&quot;9&quot;,&quot;usm&quot;:&quot;10&quot;,&quot;usw&quot;:&quot;11&quot;,&quot;eu&quot;:&quot;43.2&quot;,&quot;cm&quot;:&quot;26.9&quot;},{&quot;uk&quot;:&quot;9 \u00bd&quot;,&quot;usm&quot;:&quot;10 \u00bd&quot;,&quot;usw&quot;:&quot;11 \u00bd&quot;,&quot;eu&quot;:&quot;43.9&quot;,&quot;cm&quot;:&quot;27.3&quot;},{&quot;uk&quot;:&quot;10&quot;,&quot;usm&quot;:&quot;11&quot;,&quot;usw&quot;:&quot;12&quot;,&quot;eu&quot;:&quot;44.5&quot;,&quot;cm&quot;:&quot;27.8&quot;},{&quot;uk&quot;:&quot;10 \u00bd&quot;,&quot;usm&quot;:&quot;11 \u00bd&quot;,&quot;usw&quot;:&quot;12 \u00bd&quot;,&quot;eu&quot;:&quot;45.2&quot;,&quot;cm&quot;:&quot;28.2&quot;},{&quot;uk&quot;:&quot;11&quot;,&quot;usm&quot;:&quot;12&quot;,&quot;usw&quot;:&quot;13&quot;,&quot;eu&quot;:&quot;45.8&quot;,&quot;cm&quot;:&quot;28.6&quot;},{&quot;uk&quot;:&quot;11 \u00bd&quot;,&quot;usm&quot;:&quot;12 \u00bd&quot;,&quot;usw&quot;:&quot;13 \u00bd&quot;,&quot;eu&quot;:&quot;46.4&quot;,&quot;cm&quot;:&quot;29.0&quot;},{&quot;uk&quot;:&quot;12&quot;,&quot;usm&quot;:&quot;13&quot;,&quot;usw&quot;:&quot;14&quot;,&quot;eu&quot;:&quot;47.1&quot;,&quot;cm&quot;:&quot;29.5&quot;},{&quot;uk&quot;:&quot;12 \u00bd&quot;,&quot;usm&quot;:&quot;13 \u00bd&quot;,&quot;usw&quot;:&quot;14 \u00bd&quot;,&quot;eu&quot;:&quot;47.7&quot;,&quot;cm&quot;:&quot;29.9&quot;},{&quot;uk&quot;:&quot;13&quot;,&quot;usm&quot;:&quot;14&quot;,&quot;usw&quot;:&quot;&quot;,&quot;eu&quot;:&quot;48.4&quot;,&quot;cm&quot;:&quot;30.3&quot;},{&quot;uk&quot;:&quot;13 \u00bd&quot;,&quot;usm&quot;:&quot;14 \u00bd&quot;,&quot;usw&quot;:&quot;&quot;,&quot;eu&quot;:&quot;49.0&quot;,&quot;cm&quot;:&quot;30.7&quot;},{&quot;uk&quot;:&quot;14&quot;,&quot;usm&quot;:&quot;15&quot;,&quot;usw&quot;:&quot;&quot;,&quot;eu&quot;:&quot;49.6&quot;,&quot;cm&quot;:&quot;31.1&quot;}]'>
-//     <div>
-//         <object class="d-none metaobject">
-//             <param name="marcas_arr" value="{&quot;tenaya&quot;:[&quot;oasi&quot;,&quot;oasi lv&quot;,&quot;iati&quot;,&quot;tarifa&quot;,&quot;mundaka&quot;,&quot;indalo&quot;,&quot;mastia&quot;,&quot;ra&quot;,&quot;ra woman&quot;,&quot;inti&quot;,&quot;masai&quot;,&quot;tanta&quot;],&quot;sportiva&quot;:[&quot;solution&quot;,&quot;genius&quot;,&quot;futura&quot;,&quot;skwama&quot;,&quot;testarrosa&quot;,&quot;otaki&quot;,&quot;kataki&quot;,&quot;miura vs&quot;,&quot;miura&quot;,&quot;katana laces&quot;,&quot;tc pro&quot;,&quot;katana&quot;,&quot;theory&quot;],&quot;scarpa&quot;:[&quot;drago&quot;,&quot;furia&quot;,&quot;boostic&quot;,&quot;booster&quot;,&quot;instinc&quot;,&quot;vapor&quot;,&quot;maestro&quot;,&quot;chimera&quot;]}"/>
-//             <param name="tallas_estandar" value="[{&quot;uk&quot;:&quot;1&quot;,&quot;usm&quot;:&quot;2&quot;,&quot;usw&quot;:&quot;3&quot;,&quot;eu&quot;:&quot;33.0&quot;,&quot;cm&quot;:&quot;20.2&quot;},{&quot;uk&quot;:&quot;1 \u00bd&quot;,&quot;usm&quot;:&quot;2 \u00bd&quot;,&quot;usw&quot;:&quot;3 \u00bd&quot;,&quot;eu&quot;:&quot;33.6&quot;,&quot;cm&quot;:&quot;20.6&quot;},{&quot;uk&quot;:&quot;2&quot;,&quot;usm&quot;:&quot;3&quot;,&quot;usw&quot;:&quot;4&quot;,&quot;eu&quot;:&quot;34.3&quot;,&quot;cm&quot;:&quot;21.0&quot;},{&quot;uk&quot;:&quot;2 \u00bd&quot;,&quot;usm&quot;:&quot;3 \u00bd&quot;,&quot;usw&quot;:&quot;4 \u00bd&quot;,&quot;eu&quot;:&quot;34.9&quot;,&quot;cm&quot;:&quot;21.4&quot;},{&quot;uk&quot;:&quot;3&quot;,&quot;usm&quot;:&quot;4&quot;,&quot;usw&quot;:&quot;5&quot;,&quot;eu&quot;:&quot;35.6&quot;,&quot;cm&quot;:&quot;21.8&quot;},{&quot;uk&quot;:&quot;3 \u00bd&quot;,&quot;usm&quot;:&quot;4 \u00bd&quot;,&quot;usw&quot;:&quot;5 \u00bd&quot;,&quot;eu&quot;:&quot;36.2&quot;,&quot;cm&quot;:&quot;22.3&quot;},{&quot;uk&quot;:&quot;4&quot;,&quot;usm&quot;:&quot;5&quot;,&quot;usw&quot;:&quot;6&quot;,&quot;eu&quot;:&quot;36.8&quot;,&quot;cm&quot;:&quot;22.7&quot;},{&quot;uk&quot;:&quot;4 \u00bd&quot;,&quot;usm&quot;:&quot;5 \u00bd&quot;,&quot;usw&quot;:&quot;6 \u00bd&quot;,&quot;eu&quot;:&quot;37.5&quot;,&quot;cm&quot;:&quot;23.1&quot;},{&quot;uk&quot;:&quot;5&quot;,&quot;usm&quot;:&quot;6&quot;,&quot;usw&quot;:&quot;7&quot;,&quot;eu&quot;:&quot;38.1&quot;,&quot;cm&quot;:&quot;23.5&quot;},{&quot;uk&quot;:&quot;5 \u00bd&quot;,&quot;usm&quot;:&quot;6 \u00bd&quot;,&quot;usw&quot;:&quot;7 \u00bd&quot;,&quot;eu&quot;:&quot;38.8&quot;,&quot;cm&quot;:&quot;24.0&quot;},{&quot;uk&quot;:&quot;6&quot;,&quot;usm&quot;:&quot;7&quot;,&quot;usw&quot;:&quot;8&quot;,&quot;eu&quot;:&quot;39.4&quot;,&quot;cm&quot;:&quot;24.4&quot;},{&quot;uk&quot;:&quot;6 \u00bd&quot;,&quot;usm&quot;:&quot;7 \u00bd&quot;,&quot;usw&quot;:&quot;8 \u00bd&quot;,&quot;eu&quot;:&quot;40.0&quot;,&quot;cm&quot;:&quot;24.8&quot;},{&quot;uk&quot;:&quot;7&quot;,&quot;usm&quot;:&quot;8&quot;,&quot;usw&quot;:&quot;9&quot;,&quot;eu&quot;:&quot;40.7&quot;,&quot;cm&quot;:&quot;25.2&quot;},{&quot;uk&quot;:&quot;7 \u00bd&quot;,&quot;usm&quot;:&quot;8 \u00bd&quot;,&quot;usw&quot;:&quot;9 \u00bd&quot;,&quot;eu&quot;:&quot;41.4&quot;,&quot;cm&quot;:&quot;25.6&quot;},{&quot;uk&quot;:&quot;8&quot;,&quot;usm&quot;:&quot;9&quot;,&quot;usw&quot;:&quot;10&quot;,&quot;eu&quot;:&quot;42.0&quot;,&quot;cm&quot;:&quot;26.1&quot;},{&quot;uk&quot;:&quot;8 \u00bd&quot;,&quot;usm&quot;:&quot;9 \u00bd&quot;,&quot;usw&quot;:&quot;10 \u00bd&quot;,&quot;eu&quot;:&quot;42.6&quot;,&quot;cm&quot;:&quot;26.5&quot;},{&quot;uk&quot;:&quot;9&quot;,&quot;usm&quot;:&quot;10&quot;,&quot;usw&quot;:&quot;11&quot;,&quot;eu&quot;:&quot;43.2&quot;,&quot;cm&quot;:&quot;26.9&quot;},{&quot;uk&quot;:&quot;9 \u00bd&quot;,&quot;usm&quot;:&quot;10 \u00bd&quot;,&quot;usw&quot;:&quot;11 \u00bd&quot;,&quot;eu&quot;:&quot;43.9&quot;,&quot;cm&quot;:&quot;27.3&quot;},{&quot;uk&quot;:&quot;10&quot;,&quot;usm&quot;:&quot;11&quot;,&quot;usw&quot;:&quot;12&quot;,&quot;eu&quot;:&quot;44.5&quot;,&quot;cm&quot;:&quot;27.8&quot;},{&quot;uk&quot;:&quot;10 \u00bd&quot;,&quot;usm&quot;:&quot;11 \u00bd&quot;,&quot;usw&quot;:&quot;12 \u00bd&quot;,&quot;eu&quot;:&quot;45.2&quot;,&quot;cm&quot;:&quot;28.2&quot;},{&quot;uk&quot;:&quot;11&quot;,&quot;usm&quot;:&quot;12&quot;,&quot;usw&quot;:&quot;13&quot;,&quot;eu&quot;:&quot;45.8&quot;,&quot;cm&quot;:&quot;28.6&quot;},{&quot;uk&quot;:&quot;11 \u00bd&quot;,&quot;usm&quot;:&quot;12 \u00bd&quot;,&quot;usw&quot;:&quot;13 \u00bd&quot;,&quot;eu&quot;:&quot;46.4&quot;,&quot;cm&quot;:&quot;29.0&quot;},{&quot;uk&quot;:&quot;12&quot;,&quot;usm&quot;:&quot;13&quot;,&quot;usw&quot;:&quot;14&quot;,&quot;eu&quot;:&quot;47.1&quot;,&quot;cm&quot;:&quot;29.5&quot;},{&quot;uk&quot;:&quot;12 \u00bd&quot;,&quot;usm&quot;:&quot;13 \u00bd&quot;,&quot;usw&quot;:&quot;14 \u00bd&quot;,&quot;eu&quot;:&quot;47.7&quot;,&quot;cm&quot;:&quot;29.9&quot;},{&quot;uk&quot;:&quot;13&quot;,&quot;usm&quot;:&quot;14&quot;,&quot;usw&quot;:&quot;&quot;,&quot;eu&quot;:&quot;48.4&quot;,&quot;cm&quot;:&quot;30.3&quot;},{&quot;uk&quot;:&quot;13 \u00bd&quot;,&quot;usm&quot;:&quot;14 \u00bd&quot;,&quot;usw&quot;:&quot;&quot;,&quot;eu&quot;:&quot;49.0&quot;,&quot;cm&quot;:&quot;30.7&quot;},{&quot;uk&quot;:&quot;14&quot;,&quot;usm&quot;:&quot;15&quot;,&quot;usw&quot;:&quot;&quot;,&quot;eu&quot;:&quot;49.6&quot;,&quot;cm&quot;:&quot;31.1&quot;}]"/>
-//             <param name="comparacion_marcas_arr" value="{&quot;sportiva&quot;:{&quot;oasi&quot;:&quot;0&quot;,&quot;oasi lv&quot;:&quot;0&quot;,&quot;iati&quot;:&quot;0&quot;,&quot;mundaka&quot;:&quot;0&quot;,&quot;mastia&quot;:&quot;-0.5&quot;,&quot;tarifa&quot;:&quot;0&quot;,&quot;indalo&quot;:&quot;0&quot;,&quot;ra&quot;:&quot;0.5&quot;,&quot;ra woman&quot;:&quot;0.5&quot;,&quot;inti&quot;:&quot;0.5&quot;,&quot;masai&quot;:&quot;0.5&quot;,&quot;tanta&quot;:&quot;0&quot;},&quot;scarpa&quot;:{&quot;oasi&quot;:&quot;-1&quot;,&quot;oasi lv&quot;:&quot;-1&quot;,&quot;iati&quot;:&quot;-1&quot;,&quot;mundaka&quot;:&quot;-1&quot;,&quot;mastia&quot;:&quot;-1.5&quot;,&quot;tarifa&quot;:&quot;-1&quot;,&quot;indalo&quot;:&quot;-1&quot;,&quot;ra&quot;:&quot;-0.5&quot;,&quot;ra woman&quot;:&quot;-0.5&quot;,&quot;inti&quot;:&quot;-0.5&quot;,&quot;masai&quot;:&quot;-0.5&quot;,&quot;tanta&quot;:&quot;-1&quot;},&quot;tenaya&quot;:{&quot;oasi&quot;:&quot;0&quot;,&quot;oasi lv&quot;:&quot;0&quot;,&quot;iati&quot;:&quot;0&quot;,&quot;mundaka&quot;:&quot;0&quot;,&quot;mastia&quot;:&quot;-0.5&quot;,&quot;tarifa&quot;:&quot;0&quot;,&quot;indalo&quot;:&quot;-0.5&quot;,&quot;ra&quot;:&quot;0.5&quot;,&quot;ra woman&quot;:&quot;0.5&quot;,&quot;inti&quot;:&quot;0.5&quot;,&quot;masai&quot;:&quot;0.5&quot;,&quot;tanta&quot;:&quot;0&quot;}}"/>
-//             <param name="comparacion_zapatos_arr" value="{&quot;beginners&quot;:{&quot;oasi&quot;:&quot;0&quot;,&quot;oasi lv&quot;:&quot;0&quot;,&quot;iati&quot;:&quot;0&quot;,&quot;tarifa&quot;:&quot;0&quot;,&quot;mundaka&quot;:&quot;0&quot;,&quot;indalo&quot;:&quot;0&quot;,&quot;mastia&quot;:&quot;-0.5&quot;,&quot;ra&quot;:&quot;0.5&quot;,&quot;ra woman&quot;:&quot;0.5&quot;,&quot;inti&quot;:&quot;0.5&quot;,&quot;masai&quot;:&quot;0.5&quot;,&quot;tanta&quot;:&quot;0.5&quot;},&quot;prolonged use&quot;:{&quot;oasi&quot;:&quot;-0.5&quot;,&quot;oasi lv&quot;:&quot;-0.5&quot;,&quot;iati&quot;:&quot;-0.5&quot;,&quot;tarifa&quot;:&quot;-0.5&quot;,&quot;mundaka&quot;:&quot;-0.5&quot;,&quot;indalo&quot;:&quot;-0.5&quot;,&quot;mastia&quot;:&quot;-1&quot;,&quot;ra&quot;:&quot;0&quot;,&quot;ra woman&quot;:&quot;0&quot;,&quot;inti&quot;:&quot;0&quot;,&quot;masai&quot;:&quot;0&quot;,&quot;tanta&quot;:&quot;0&quot;},&quot;comfort fit&quot;:{&quot;oasi&quot;:&quot;-1&quot;,&quot;oasi lv&quot;:&quot;-1&quot;,&quot;iati&quot;:&quot;-1&quot;,&quot;tarifa&quot;:&quot;-1&quot;,&quot;mundaka&quot;:&quot;-1&quot;,&quot;indalo&quot;:&quot;-1&quot;,&quot;mastia&quot;:&quot;-1.5&quot;,&quot;ra&quot;:&quot;-0.5&quot;,&quot;ra woman&quot;:&quot;-0.5&quot;,&quot;inti&quot;:&quot;-0.5&quot;,&quot;masai&quot;:&quot;-0.5&quot;,&quot;tanta&quot;:&quot;-0.5&quot;},&quot;tighter fit&quot;:{&quot;oasi&quot;:&quot;-1.5&quot;,&quot;oasi lv&quot;:&quot;-1.5&quot;,&quot;iati&quot;:&quot;-1.5&quot;,&quot;tarifa&quot;:&quot;-1.5&quot;,&quot;mundaka&quot;:&quot;-1.5&quot;,&quot;indalo&quot;:&quot;-1.5&quot;,&quot;mastia&quot;:&quot;-2&quot;,&quot;ra&quot;:&quot;-1&quot;,&quot;ra woman&quot;:&quot;-1&quot;,&quot;inti&quot;:&quot;-1&quot;,&quot;masai&quot;:&quot;-1&quot;,&quot;tanta&quot;:&quot;-1&quot;}}"/>
-//         </object>
-//     </div>
-// </div>
-// <script>
-//     (function() {
-//         /* Autoejecutable: limpieza por si usuario ha ido hacia atrás en su elección */
-//         jQuery('.ajax-target-pie-de-gato-confort').html('');
-//     }
-//     )();
-// </script>
-// <script>
-//     (function() {
-//         /* Autoejecutable: hay que saber qué va eligiendo el usuario */
-//         // DOM cleaning
-//         LimpiaDOMCompararTallas("pie-de-gato");
-
-//         // stores user selections
-//         ShowUserSelectedOptions("pie-de-gato");
-
-//         //console.log('---> FROM BLOCKS $data_type =', 'modelo-tenaya-nuevo')
-//         // shows recommended size
-//         ShowRecommendedSize("pie-de-gato");
-//     }
-//     )();
-// </script>
-// <!-- END Template/ajax/bloques-eleccion -->

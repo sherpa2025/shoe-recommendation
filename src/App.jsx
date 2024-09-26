@@ -12,7 +12,7 @@ const App = () => {
   const [userUkSize, setUserUkSize] = useState(null);
   const [recommendedUkSize, setRecommendedUkSize] = useState(null);
   const [currentSection, setCurrentSection] = useState(null);
-  const [comfortPreference, setComfortPreference] = useState(null);
+  const [selectedComfortOption, setSelectedComfortOption] = useState(null);
 
   const brands = {
     Sportiva: [
@@ -215,7 +215,8 @@ const App = () => {
     setSelectedSizeType(null);
     setSelectedSize(null);
     setRecommendedModel(null);
-    setComfortPreference(null);
+    setRecommendedUkSize(null);
+    setSelectedComfortOption(null);
   };
 
   const handleBrandClick = (brand) => {
@@ -300,8 +301,9 @@ const App = () => {
     setCurrentSection("street");
   };
 
-  const handleComfortPreferenceClick = (option) => {
-    setComfortPreference(option);
+  const handleComfortOptionClick = (option) => {
+    setSelectedComfortOption(option);
+    setRecommendedUkSize(null);
   };
 
   return (
@@ -450,7 +452,7 @@ const App = () => {
       {currentSection === "street" && (
         <div>
           <section className="section">
-            <h3>Select your size type</h3>
+            <h3>Select Size Type</h3>
             <div className="options">
               {sizeTypes.map((sizeType) => (
                 <button
@@ -465,15 +467,17 @@ const App = () => {
               ))}
             </div>
           </section>
+
           {selectedSizeType && (
             <section className="section">
               <h3>Size</h3>
               {renderSizes()}
             </section>
           )}
-          {selectedSizeType && selectedSize && (
+
+          {selectedSize && (
             <section className="section">
-              <h3>Choose your Tenaya Model</h3>
+              <h3>Select Your Tenaya Model</h3>
               <div className="options">
                 {brands.Tenaya.map((model) => (
                   <button
@@ -489,22 +493,65 @@ const App = () => {
               </div>
             </section>
           )}
+
           {recommendedModel && (
             <section className="section">
-              <h3>Select Comfort Preference</h3>
+              <h3>Select Comfort Option</h3>
               <div className="options">
                 {comfortOptions.map((option) => (
                   <button
                     key={option}
                     className={`option ${
-                      comfortPreference === option ? "selected" : ""
+                      selectedComfortOption === option ? "selected" : ""
                     }`}
-                    onClick={() => handleComfortPreferenceClick(option)}
+                    onClick={() => handleComfortOptionClick(option)}
                   >
                     {option}
                   </button>
                 ))}
               </div>
+            </section>
+          )}
+
+          {selectedComfortOption && (
+            <section className="section">
+              <h3>Your recommended size: Tenaya {recommendedModel}</h3>
+              <div
+                style={{
+                  backgroundColor: "#333",
+                  color: "white",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  width: "calc(25% - 40px)",
+                  height: "calc(25% - 40px)",
+                  boxSizing: "border-box",
+                }}
+              >
+                {["UK", "USM", "USW", "EU", "CM"].map((type) => {
+                  const sizeToDisplay = displayEquivalents[type] || "N/A";
+
+                  return (
+                    <p key={type}>
+                      <span
+                        style={{
+                          textDecoration:
+                            type === selectedSizeType ? "underline" : "none",
+                        }}
+                      >
+                        {type}: {sizeToDisplay}
+                      </span>
+                    </p>
+                  );
+                })}
+              </div>
+
+              <h4>
+                Street shoe: {selectedSizeType} {selectedSize}
+                <br />
+                New Tenaya model: {recommendedModel}
+                <br />
+                Comfort Option: {selectedComfortOption}
+              </h4>
             </section>
           )}
         </div>

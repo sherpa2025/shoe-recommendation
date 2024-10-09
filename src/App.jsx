@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import { brands, sizeTypes, comfortOptions, sizes } from "./shoeData";
 import { getEquivalentSizes, getFinalSizes } from "./sizeConversions";
-import { getRecommendation } from "./climbingShoeRecommendation";
+import {
+  getShoeRecommendation,
+  getStreetRecommendation,
+} from "./shoeRecommendationLogic";
 
 const App = () => {
   const [selectedBrand, setSelectedBrand] = useState(null);
@@ -13,201 +17,6 @@ const App = () => {
   const [recommendedUkSize, setRecommendedUkSize] = useState(null);
   const [currentSection, setCurrentSection] = useState(null);
   const [selectedComfortOption, setSelectedComfortOption] = useState(null);
-
-  const brands = {
-    Sportiva: [
-      "Solution",
-      "Genius",
-      "Futura",
-      "Skwama",
-      "Testarrosa",
-      "Otaki",
-      "Kataki",
-      "Miura Vs",
-      "Miura",
-      "Katana Laces",
-      "Tc Pro",
-      "Katana",
-      "Theory",
-    ],
-    Scarpa: [
-      "Drago",
-      "Furia",
-      "Boostic",
-      "Booster",
-      "Instinc",
-      "Vapor",
-      "Maestro",
-      "Chimera",
-    ],
-    Tenaya: [
-      "Oasi",
-      "Oasi Lv",
-      "Iati",
-      "Tarifa",
-      "Mundaka",
-      "Indalo",
-      "Mastia",
-      "Ra",
-      "Ra Woman",
-      "Inti",
-      "Masai",
-      "Tanta",
-    ],
-  };
-
-  const sizeTypes = ["UK", "USM", "USW", "EU", "CM"];
-  const comfortOptions = [
-    "Beginners",
-    "Prolonged Use",
-    "Comfort Fit",
-    "Tighter Fit",
-  ];
-
-  const sizes = {
-    UK: [
-      "1",
-      "1 ½",
-      "2",
-      "2 ½",
-      "3",
-      "3 ½",
-      "4",
-      "4 ½",
-      "5",
-      "5 ½",
-      "6",
-      "6 ½",
-      "7",
-      "7 ½",
-      "8",
-      "8 ½",
-      "9",
-      "9 ½",
-      "10",
-      "10 ½",
-      "11",
-      "11 ½",
-      "12",
-      "12 ½",
-      "13",
-      "13 ½",
-      "14",
-    ],
-    USM: [
-      "2",
-      "2 ½",
-      "3",
-      "3 ½",
-      "4",
-      "4 ½",
-      "5",
-      "5 ½",
-      "6",
-      "6 ½",
-      "7",
-      "7 ½",
-      "8",
-      "8 ½",
-      "9",
-      "9 ½",
-      "10",
-      "10 ½",
-      "11",
-      "11 ½",
-      "12",
-      "12 ½",
-      "13",
-      "13 ½",
-      "14",
-      "14 ½",
-      "15",
-    ],
-    USW: [
-      "3",
-      "3 ½",
-      "4",
-      "4 ½",
-      "5",
-      "5 ½",
-      "6",
-      "6 ½",
-      "7",
-      "7 ½",
-      "8",
-      "8 ½",
-      "9",
-      "9 ½",
-      "10",
-      "10 ½",
-      "11",
-      "11 ½",
-      "12",
-      "12 ½",
-      "13",
-      "13 ½",
-      "14",
-      "14 ½",
-    ],
-    EU: [
-      "33.0",
-      "33.6",
-      "34.3",
-      "34.9",
-      "35.6",
-      "36.2",
-      "36.8",
-      "37.5",
-      "38.1",
-      "38.8",
-      "39.4",
-      "40.0",
-      "40.7",
-      "41.4",
-      "42.0",
-      "42.6",
-      "43.2",
-      "43.9",
-      "44.5",
-      "45.2",
-      "45.8",
-      "46.4",
-      "47.1",
-      "47.7",
-      "48.4",
-      "49.0",
-      "49.6",
-    ],
-    CM: [
-      "20.2",
-      "20.6",
-      "21.0",
-      "21.4",
-      "21.8",
-      "22.3",
-      "22.7",
-      "23.1",
-      "23.5",
-      "24.0",
-      "24.4",
-      "24.8",
-      "25.2",
-      "25.6",
-      "26.1",
-      "26.5",
-      "26.9",
-      "27.3",
-      "27.8",
-      "28.2",
-      "28.6",
-      "29.0",
-      "29.5",
-      "29.9",
-      "30.3",
-      "30.7",
-      "31.1",
-    ],
-  };
 
   const resetStates = () => {
     setSelectedBrand(null);
@@ -234,15 +43,11 @@ const App = () => {
     setRecommendedModel(null);
   };
 
-  const handleTenayaModelClick = (model) => {
-    setRecommendedModel(model);
-    setRecommendedUkSize(null); // Clear previous parsed size
-  };
-
   const handleSizeTypeClick = (sizeType) => {
     setSelectedSizeType(sizeType);
     setSelectedSize(null);
     setRecommendedModel(null); // Reset recommendation when size type changes
+    setSelectedComfortOption(null);
   };
 
   const handleSizeClick = (size) => {
@@ -250,18 +55,67 @@ const App = () => {
     setSelectedSize(size);
     setUserUkSize(equivalents.UK); // Store the UK size
     setRecommendedModel(null); // Reset recommendation when size changes
+    setSelectedComfortOption(null);
+  };
+
+  const handleTenayaModelClick = (model) => {
+    setRecommendedModel(model);
+    setRecommendedUkSize(null); // Clear previous parsed size
+    setSelectedComfortOption(null);
+  };
+
+  // Use the UK size to get size equivalents for final recommendation shoe size
+  const displayEquivalents = recommendedUkSize
+    ? getFinalSizes(recommendedUkSize)
+    : {};
+
+  const handleClimbingSectionClick = () => {
+    resetStates();
+    setCurrentSection("climbing");
+  };
+
+  const handleStreetSectionClick = () => {
+    resetStates();
+    setCurrentSection("street");
+  };
+
+  const handleComfortOptionClick = (option) => {
+    setSelectedComfortOption(option);
+    setRecommendedUkSize(null);
   };
 
   useEffect(() => {
-    if (recommendedModel && userUkSize && selectedBrand) {
-      const recommendation = getRecommendation(
-        selectedBrand,
-        userUkSize,
-        recommendedModel
-      );
-      setRecommendedUkSize(recommendation.recommendedSize);
-    }
-  }, [recommendedModel, userUkSize, selectedBrand]);
+    const fetchRecommendation = () => {
+      if (
+        (currentSection === "climbing" &&
+          recommendedModel &&
+          userUkSize &&
+          selectedBrand) ||
+        (currentSection === "street" &&
+          recommendedModel &&
+          userUkSize &&
+          selectedComfortOption)
+      ) {
+        const recommendation =
+          currentSection === "climbing"
+            ? getShoeRecommendation(selectedBrand, userUkSize, recommendedModel)
+            : getStreetRecommendation(
+                recommendedModel,
+                userUkSize,
+                selectedComfortOption
+              );
+        setRecommendedUkSize(recommendation.recommendedSize);
+      }
+    };
+
+    fetchRecommendation();
+  }, [
+    recommendedModel,
+    userUkSize,
+    selectedBrand,
+    selectedComfortOption,
+    currentSection,
+  ]);
 
   const renderSizes = () => {
     if (selectedSizeType) {
@@ -285,26 +139,6 @@ const App = () => {
   };
   const allSelectionsMade =
     selectedBrand && selectedModel && selectedSizeType && selectedSize;
-
-  // Use the UK size to get size equivalents for final recommendation shoe size
-  const displayEquivalents = recommendedUkSize
-    ? getFinalSizes(recommendedUkSize)
-    : {};
-
-  const handleClimbingSectionClick = () => {
-    resetStates();
-    setCurrentSection("climbing");
-  };
-
-  const handleStreetSectionClick = () => {
-    resetStates();
-    setCurrentSection("street");
-  };
-
-  const handleComfortOptionClick = (option) => {
-    setSelectedComfortOption(option);
-    setRecommendedUkSize(null);
-  };
 
   return (
     <div className="app">
@@ -418,13 +252,15 @@ const App = () => {
                   boxSizing: "border-box",
                 }}
               >
-                {["UK", "USM", "USW", "EU", "CM"].map((type) => {
-                  const sizeToDisplay =
-                    type === selectedSizeType
-                      ? displayEquivalents[type] || "N/A"
-                      : displayEquivalents[type] || "N/A";
-
-                  return (
+                {Object.keys(displayEquivalents).length === 0 ||
+                Object.values(displayEquivalents).every(
+                  (size) => !size || size === "N/A"
+                ) ? (
+                  // If no valid sizes are found, show this message
+                  <p>No shoe recommendation with this combination</p>
+                ) : (
+                  // Otherwise, display the equivalent sizes
+                  ["UK", "USM", "USW", "EU", "CM"].map((type) => (
                     <p key={type}>
                       <span
                         style={{
@@ -432,11 +268,11 @@ const App = () => {
                             type === selectedSizeType ? "underline" : "none",
                         }}
                       >
-                        {type}: {sizeToDisplay}
+                        {type}: {displayEquivalents[type] || "N/A"}
                       </span>
                     </p>
-                  );
-                })}
+                  ))
+                )}
               </div>
 
               <h4>
@@ -527,10 +363,15 @@ const App = () => {
                   boxSizing: "border-box",
                 }}
               >
-                {["UK", "USM", "USW", "EU", "CM"].map((type) => {
-                  const sizeToDisplay = displayEquivalents[type] || "N/A";
-
-                  return (
+                {Object.keys(displayEquivalents).length === 0 ||
+                Object.values(displayEquivalents).every(
+                  (size) => !size || size === "N/A"
+                ) ? (
+                  // If no valid sizes are found, show this message
+                  <p>No shoe recommendation with this combination</p>
+                ) : (
+                  // Otherwise, display the equivalent sizes
+                  ["UK", "USM", "USW", "EU", "CM"].map((type) => (
                     <p key={type}>
                       <span
                         style={{
@@ -538,11 +379,11 @@ const App = () => {
                             type === selectedSizeType ? "underline" : "none",
                         }}
                       >
-                        {type}: {sizeToDisplay}
+                        {type}: {displayEquivalents[type] || "N/A"}
                       </span>
                     </p>
-                  );
-                })}
+                  ))
+                )}
               </div>
 
               <h4>

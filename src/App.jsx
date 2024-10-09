@@ -142,7 +142,10 @@ const App = () => {
 
   return (
     <div className="app">
-      <h1>Shoe Recommendation System</h1>
+      <h4>
+        Follow these 6 simple steps to find the perfect fit for your Tenaya
+        climbing shoes
+      </h4>
 
       {/* Toggle buttons */}
       <div className="toggle-buttons">

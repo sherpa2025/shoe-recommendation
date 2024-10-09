@@ -8,18 +8,18 @@ function parseSize(size) {
   return parseFloat(size);
 }
 
-export const getRecommendation = (
-  previousBrand,
-  userUkSize,
-  recommendedModel
+export const getStreetRecommendation = (
+  userChoosenBrand, // Recommended model
+  userUkSize, // User's UK size
+  comfortOption // Comfort option chosen
 ) => {
   // Normalize UK size
   const normalizedUkSize = parseSize(userUkSize);
 
   // Get the adjustment value for the recommended model based on the previous brand
   const adjustment =
-    recommendationData[previousBrand.toLowerCase()]?.[
-      recommendedModel.toLowerCase()
+    streetRecommendationData[comfortOption.toLowerCase()]?.[
+      userChoosenBrand.toLowerCase()
     ] || "0";
 
   // Convert the adjustment to a number
@@ -38,48 +38,62 @@ export const getRecommendation = (
   };
 };
 
-// Recommendation data basedoon previous climbing shoe
-const recommendationData = {
-  sportiva: {
+// Street recommendation data
+const streetRecommendationData = {
+  beginners: {
     oasi: "0",
     "oasi lv": "0",
     iati: "0",
-    mundaka: "0",
-    mastia: "-0.5",
     tarifa: "0",
+    mundaka: "0",
     indalo: "0",
+    mastia: "-0.5",
     ra: "0.5",
     "ra woman": "0.5",
     inti: "0.5",
     masai: "0.5",
+    tanta: "0.5",
+  },
+  "prolonged use": {
+    oasi: "-0.5",
+    "oasi lv": "-0.5",
+    iati: "-0.5",
+    tarifa: "-0.5",
+    mundaka: "-0.5",
+    indalo: "-0.5",
+    mastia: "-1",
+    ra: "0",
+    "ra woman": "0",
+    inti: "0",
+    masai: "0",
     tanta: "0",
   },
-  scarpa: {
+  "comfort fit": {
     oasi: "-1",
     "oasi lv": "-1",
     iati: "-1",
-    mundaka: "-1",
-    mastia: "-1.5",
     tarifa: "-1",
+    mundaka: "-1",
     indalo: "-1",
+    mastia: "-1.5",
     ra: "-0.5",
     "ra woman": "-0.5",
     inti: "-0.5",
     masai: "-0.5",
-    tanta: "-1",
+    tanta: "-0.5",
   },
-  tenaya: {
-    oasi: "0",
-    "oasi lv": "0",
-    iati: "0",
-    mundaka: "0",
-    mastia: "-0.5",
-    tarifa: "0",
-    indalo: "-0.5",
-    ra: "0.5",
-    "ra woman": "0.5",
-    inti: "0.5",
-    masai: "0.5",
-    tanta: "0",
+  "tighter fit": {
+    oasi: "-1.5",
+    "oasi lv": "-1.5",
+    iati: "-1.5",
+    tarifa: "-1.5",
+    mundaka: "-1.5",
+    indalo: "-1.5",
+    mastia: "-2",
+    ra: "-1",
+    "ra woman": "-1",
+    inti: "-1",
+    masai: "-1",
+    tanta: "-1",
   },
 };

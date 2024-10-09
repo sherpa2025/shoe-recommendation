@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import { getEquivalentSizes, getFinalSizes } from "./sizeConversions";
 import { getRecommendation } from "./climbingShoeRecommendation";
+import { getStreetRecommendation } from "./streeShoeRecommendation";
 
 const App = () => {
   const [selectedBrand, setSelectedBrand] = useState(null);
@@ -237,12 +238,14 @@ const App = () => {
   const handleTenayaModelClick = (model) => {
     setRecommendedModel(model);
     setRecommendedUkSize(null); // Clear previous parsed size
+    setSelectedComfortOption(null);
   };
 
   const handleSizeTypeClick = (sizeType) => {
     setSelectedSizeType(sizeType);
     setSelectedSize(null);
     setRecommendedModel(null); // Reset recommendation when size type changes
+    setSelectedComfortOption(null);
   };
 
   const handleSizeClick = (size) => {
@@ -250,10 +253,17 @@ const App = () => {
     setSelectedSize(size);
     setUserUkSize(equivalents.UK); // Store the UK size
     setRecommendedModel(null); // Reset recommendation when size changes
+    setSelectedComfortOption(null);
   };
 
+  // Effect to get recommendation for climbing shoes
   useEffect(() => {
-    if (recommendedModel && userUkSize && selectedBrand) {
+    if (
+      currentSection === "climbing" &&
+      recommendedModel &&
+      userUkSize &&
+      selectedBrand
+    ) {
       const recommendation = getRecommendation(
         selectedBrand,
         userUkSize,
@@ -261,7 +271,24 @@ const App = () => {
       );
       setRecommendedUkSize(recommendation.recommendedSize);
     }
-  }, [recommendedModel, userUkSize, selectedBrand]);
+  }, [recommendedModel, userUkSize, selectedBrand, currentSection]);
+
+  // Effect to get recommendation for street shoes
+  useEffect(() => {
+    if (
+      currentSection === "street" &&
+      recommendedModel &&
+      userUkSize &&
+      selectedComfortOption
+    ) {
+      const recommendation = getStreetRecommendation(
+        recommendedModel, // This is the selected brand/model for street shoes
+        userUkSize,
+        selectedComfortOption
+      );
+      setRecommendedUkSize(recommendation.recommendedSize);
+    }
+  }, [recommendedModel, userUkSize, selectedComfortOption, currentSection]);
 
   const renderSizes = () => {
     if (selectedSizeType) {
@@ -418,13 +445,15 @@ const App = () => {
                   boxSizing: "border-box",
                 }}
               >
-                {["UK", "USM", "USW", "EU", "CM"].map((type) => {
-                  const sizeToDisplay =
-                    type === selectedSizeType
-                      ? displayEquivalents[type] || "N/A"
-                      : displayEquivalents[type] || "N/A";
-
-                  return (
+                {Object.keys(displayEquivalents).length === 0 ||
+                Object.values(displayEquivalents).every(
+                  (size) => !size || size === "N/A"
+                ) ? (
+                  // If no valid sizes are found, show this message
+                  <p>No shoe recommendation with this combination</p>
+                ) : (
+                  // Otherwise, display the equivalent sizes
+                  ["UK", "USM", "USW", "EU", "CM"].map((type) => (
                     <p key={type}>
                       <span
                         style={{
@@ -432,11 +461,11 @@ const App = () => {
                             type === selectedSizeType ? "underline" : "none",
                         }}
                       >
-                        {type}: {sizeToDisplay}
+                        {type}: {displayEquivalents[type] || "N/A"}
                       </span>
                     </p>
-                  );
-                })}
+                  ))
+                )}
               </div>
 
               <h4>
@@ -527,10 +556,15 @@ const App = () => {
                   boxSizing: "border-box",
                 }}
               >
-                {["UK", "USM", "USW", "EU", "CM"].map((type) => {
-                  const sizeToDisplay = displayEquivalents[type] || "N/A";
-
-                  return (
+                {Object.keys(displayEquivalents).length === 0 ||
+                Object.values(displayEquivalents).every(
+                  (size) => !size || size === "N/A"
+                ) ? (
+                  // If no valid sizes are found, show this message
+                  <p>No shoe recommendation with this combination</p>
+                ) : (
+                  // Otherwise, display the equivalent sizes
+                  ["UK", "USM", "USW", "EU", "CM"].map((type) => (
                     <p key={type}>
                       <span
                         style={{
@@ -538,11 +572,11 @@ const App = () => {
                             type === selectedSizeType ? "underline" : "none",
                         }}
                       >
-                        {type}: {sizeToDisplay}
+                        {type}: {displayEquivalents[type] || "N/A"}
                       </span>
                     </p>
-                  );
-                })}
+                  ))
+                )}
               </div>
 
               <h4>

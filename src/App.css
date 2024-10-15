@@ -1,9 +1,11 @@
 * {
   margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
+.app {
+  padding-bottom: 80px;
+}
 html,
 body {
   height: 100%;
@@ -32,16 +34,15 @@ body {
   width: 100%;
   margin: 10px 0;
 }
-
-.step-outer-prompt {
-  font-weight: bolder;
-  font-size: clamp(1.4rem, 2vw, 2.5rem);
-}
 .step-container {
   position: relative;
   padding-left: 15px;
   border-left: 8px solid #dcdcdc;
-  margin: 15px 15px 0px 4px;
+  margin: 15px 15px 0px 10px;
+}
+.step-outer-prompt {
+  font-weight: bolder;
+  font-size: clamp(1.4rem, 2vw, 2.5rem);
 }
 
 .step-inner-prompt {
@@ -132,11 +133,12 @@ body {
 }
 
 .brand-model button:hover {
-  border-bottom: 5px solid #00bfff; /* Highlight the selected brand */
+  border-bottom: 5px solid #00bfff;
 }
 
-.brand-model button.option.selected {
-  border-bottom: 5px solid #00bfff; /* Highlight the selected brand */
+.brand-model button.selected {
+  border-bottom: 5px solid #00bfff;
+  box-shadow: none;
 }
 
 .brand-model button.unselected {
@@ -147,48 +149,181 @@ body {
   );
   opacity: 0.7;
 }
-
+.brand-model button:not(:last-child) {
+  border-right: 2px solid black;
+}
+.model-name {
+  text-transform: uppercase;
+  font-weight: bolder;
+  font-size: clamp(0.9rem, 1.1vw, 2rem);
+}
 .model-logo {
-  width: 100px; /* Adjust image size */
+  width: 80px;
   height: auto;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
-/* Add right border only */
-.brand-model button:not(:last-child) {
-  border-right: 2px solid black; /* Add solid border on the right side, except the last button in each row */
+.size-type {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.size-type button {
+  background-color: #fff;
+  border: 2px dashed black;
+  padding: 15px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  font-weight: bolder;
+  font-size: clamp(1rem, 1.2vw, 1.8rem);
+}
+
+.size-type button:hover {
+  border-color: #00bfff;
+}
+
+.size-type button.selected {
+  border: 2px solid #00bfff; /* Highlight the selected brand */
+}
+
+.size-type button.unselected {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.8)
+  );
+  opacity: 0.7;
+}
+
+.sizes select {
+  padding: 5px 15px 5px 5px;
+  border: 2px solid black;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: clamp(1.1rem, 1.1vw, 2rem);
+  cursor: pointer;
+  margin-top: 15px;
+  width: 90px;
+  height: auto;
+}
+
+.sizes select.selected {
+  border-color: #00bfff;
+  outline: none;
+}
+
+.final-container {
+  position: relative;
+  padding-left: 15px;
+  border-left: 8px solid #00bfff;
+  margin: 15px 15px 0px 10px;
+}
+.final-outer-prompt {
+  font-weight: bolder;
+  font-size: clamp(1.4rem, 2vw, 2.5rem);
+  text-transform: uppercase;
+}
+
+.final-inner-prompt {
+  font-size: 1rem;
+  margin-top: 15px;
+}
+
+.final-border-line {
+  border-bottom: 2px solid #778899;
+  width: 30%;
+  margin: 10px 0;
+}
+
+.image-and-table {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+}
+
+.model-image {
+  width: 150px; /* Adjust the size of the image */
+  height: auto;
+  border-radius: 8px; /* Optional: gives a rounded border to the image */
+}
+
+.size-table {
+  table-layout: fixed;
+  width: 150px;
+  border-collapse: collapse;
+  border: none;
+}
+
+.size-table td {
+  padding: 5px;
+  border-right: 2px solid black;
+}
+
+.size-table td:last-child,
+.size-table th:last-child {
+  border-right: none;
+}
+
+.size-table tr:nth-child(odd) {
+  background-color: #dcdcdc; /* Light gray background for odd rows */
+}
+
+.comfort-options {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.comfort-options button {
+  background-color: #fff;
+  border: 2px dashed black;
+  padding: 15px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  font-size: clamp(1rem, 1.2vw, 1.8rem);
+  font-weight: bolder;
+}
+
+.comfort-options button:hover {
+  border-color: #00bfff;
+}
+
+.comfort-options button.selected {
+  border: 2px solid #00bfff; /* Highlight the selected brand */
+}
+
+.comfort-options button.unselected {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.8)
+  );
+  opacity: 0.7;
 }
 
 @media (max-width: 1200px) {
   .brand-model {
-    grid-template-columns: repeat(
-      6,
-      1fr
-    ); /* 6 models per row on medium screens */
+    grid-template-columns: repeat(6, 1fr);
   }
 }
 
 @media (max-width: 900px) {
   .brand-model {
-    grid-template-columns: repeat(
-      4,
-      1fr
-    ); /* 4 models per row on smaller screens */
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media (max-width: 600px) {
   .brand-model {
-    grid-template-columns: repeat(
-      2,
-      1fr
-    ); /* 2 models per row on small screens */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 400px) {
   .brand-model {
-    grid-template-columns: 1fr; /* 1 model per row on very small screens */
+    grid-template-columns: 1fr;
   }
 }
 

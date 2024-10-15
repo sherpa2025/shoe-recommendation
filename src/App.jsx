@@ -12,9 +12,9 @@ import tenayaLogo from "../public/assets/tenaya/tenaya-logo.png";
 const App = () => {
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [selectedModel, setSelectedModel] = useState(null);
+  const [selectedTenayaModel, setSelectedTenayaModel] = useState(null);
   const [selectedSizeType, setSelectedSizeType] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
-  const [recommendedModel, setRecommendedModel] = useState(null);
   const [userUkSize, setUserUkSize] = useState(null);
   const [recommendedUkSize, setRecommendedUkSize] = useState(null);
   const [currentSection, setCurrentSection] = useState(null);
@@ -23,9 +23,9 @@ const App = () => {
   const resetStates = () => {
     setSelectedBrand(null);
     setSelectedModel(null);
+    setSelectedTenayaModel(null);
     setSelectedSizeType(null);
     setSelectedSize(null);
-    setRecommendedModel(null);
     setRecommendedUkSize(null);
     setSelectedComfortOption(null);
   };
@@ -35,20 +35,20 @@ const App = () => {
     setSelectedModel(null);
     setSelectedSizeType(null);
     setSelectedSize(null);
-    setRecommendedModel(null);
+    setSelectedTenayaModel(null);
   };
 
   const handleModelClick = (model) => {
     setSelectedModel(model);
     setSelectedSizeType(null);
     setSelectedSize(null);
-    setRecommendedModel(null);
+    setSelectedTenayaModel(null);
   };
 
   const handleSizeTypeClick = (sizeType) => {
     setSelectedSizeType(sizeType);
     setSelectedSize(null);
-    setRecommendedModel(null); // Reset recommendation when size type changes
+    setSelectedTenayaModel(null);
     setSelectedComfortOption(null);
   };
 
@@ -56,12 +56,12 @@ const App = () => {
     const equivalents = getEquivalentSizes(size, selectedSizeType);
     setSelectedSize(size);
     setUserUkSize(equivalents.UK); // Store the UK size
-    setRecommendedModel(null); // Reset recommendation when size changes
+    setSelectedTenayaModel(null);
     setSelectedComfortOption(null);
   };
 
   const handleTenayaModelClick = (model) => {
-    setRecommendedModel(model);
+    setSelectedTenayaModel(model);
     setRecommendedUkSize(null); // Clear previous parsed size
     setSelectedComfortOption(null);
   };
@@ -90,19 +90,23 @@ const App = () => {
     const fetchRecommendation = () => {
       if (
         (currentSection === "climbing" &&
-          recommendedModel &&
+          selectedTenayaModel &&
           userUkSize &&
           selectedBrand) ||
         (currentSection === "street" &&
-          recommendedModel &&
+          selectedTenayaModel &&
           userUkSize &&
           selectedComfortOption)
       ) {
         const recommendation =
           currentSection === "climbing"
-            ? getShoeRecommendation(selectedBrand, userUkSize, recommendedModel)
+            ? getShoeRecommendation(
+                selectedBrand,
+                userUkSize,
+                selectedTenayaModel
+              )
             : getStreetRecommendation(
-                recommendedModel,
+                selectedTenayaModel,
                 userUkSize,
                 selectedComfortOption
               );
@@ -112,7 +116,7 @@ const App = () => {
 
     fetchRecommendation();
   }, [
-    recommendedModel,
+    selectedTenayaModel,
     userUkSize,
     selectedBrand,
     selectedComfortOption,
@@ -123,17 +127,20 @@ const App = () => {
     if (selectedSizeType) {
       return (
         <div className="sizes">
-          {sizes[selectedSizeType]?.map((size) => (
-            <button
-              key={size}
-              className={`size-option ${
-                size === selectedSize ? "selected" : ""
-              }`}
-              onClick={() => handleSizeClick(size)}
-            >
-              {size}
-            </button>
-          ))}
+          <select
+            value={selectedSize || ""}
+            onChange={(e) => handleSizeClick(e.target.value)}
+            className={selectedSize ? "selected" : "unselected"}
+          >
+            <option value="" disabled>
+              ---
+            </option>
+            {sizes[selectedSizeType]?.map((size) => (
+              <option key={size} value={size}>
+                {size}
+              </option>
+            ))}
+          </select>
         </div>
       );
     }
@@ -229,7 +236,7 @@ const App = () => {
                 {brands[selectedBrand].models.map((model) => (
                   <button
                     key={model.name}
-                    className={`option ${
+                    className={`${
                       selectedModel === model.name
                         ? "selected"
                         : selectedModel !== null
@@ -243,7 +250,7 @@ const App = () => {
                       alt={model.name}
                       className="model-logo"
                     />
-                    <span>{model.name}</span>
+                    <p className="model-name">{model.name}</p>
                   </button>
                 ))}
               </div>
@@ -251,15 +258,21 @@ const App = () => {
           )}
 
           {selectedModel && (
-            <section className="section">
-              <h3>Select the size of your previous model</h3>
-              <h3>Size type</h3>
-              <div className="options">
+            <section className="step-container">
+              <p className="step-outer-prompt">Step 4</p>
+              <p className="step-inner-prompt">
+                Select your regional sizing preference.
+              </p>
+              <div className="size-type">
                 {sizeTypes.map((sizeType) => (
                   <button
                     key={sizeType}
-                    className={`option ${
-                      selectedSizeType === sizeType ? "selected" : ""
+                    className={`${
+                      selectedSizeType === sizeType
+                        ? "selected"
+                        : selectedSizeType !== null
+                        ? "unselected"
+                        : ""
                     }`}
                     onClick={() => handleSizeTypeClick(sizeType)}
                   >
@@ -271,88 +284,121 @@ const App = () => {
           )}
 
           {selectedSizeType && (
-            <section className="section">
-              <h3>Size</h3>
+            <section className="step-container">
+              <p className="step-outer-prompt">Step 5</p>
+              <p className="step-inner-prompt">Select your size.</p>
               {renderSizes()}
             </section>
           )}
 
           {allSelectionsMade && (
-            <section className="section">
-              <h3>Choose your Tenaya Model</h3>
-              <div className="options">
-                {brands.Tenaya.map((model) => (
+            <section className="step-container">
+              <p className="step-outer-prompt">Step 6</p>
+              <p className="step-inner-prompt">
+                Please select the Tenaya model that piques your interest.
+              </p>
+              <div className="brand-model">
+                {brands.Tenaya.models.map((model) => (
                   <button
-                    key={model}
-                    className={`option ${
-                      recommendedModel === model ? "selected" : ""
+                    key={model.name}
+                    className={`${
+                      selectedTenayaModel === model.name
+                        ? "selected"
+                        : selectedTenayaModel !== null
+                        ? "unselected"
+                        : ""
                     }`}
-                    onClick={() => handleTenayaModelClick(model)}
+                    onClick={() => handleTenayaModelClick(model.name)}
                   >
-                    {model}
+                    <img
+                      src={model.image}
+                      alt={model.name}
+                      className="model-logo"
+                    />
+                    <p className="model-name">{model.name}</p>
                   </button>
                 ))}
               </div>
             </section>
           )}
 
-          {recommendedModel && (
-            <section className="section">
-              <h3>Your recommended size: Tenaya {recommendedModel}</h3>
-              <div
-                style={{
-                  backgroundColor: "#333",
-                  color: "white",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  width: "calc(25% - 40px)",
-                  height: "calc(25% - 40px)",
-                  boxSizing: "border-box",
-                }}
+          {selectedTenayaModel && (
+            <section className="final-container">
+              <p className="final-outer-prompt">
+                HERE&apos;S OUR SIZING RECOMMENDATION.
+              </p>
+              <p className="final-inner-prompt">Previous climbing shoes:</p>
+              <p
+                className="step-inner-prompt"
+                style={{ fontWeight: "bolder", fontSize: "18px" }}
               >
-                {Object.keys(displayEquivalents).length === 0 ||
-                Object.values(displayEquivalents).every(
-                  (size) => !size || size === "N/A"
-                ) ? (
-                  // If no valid sizes are found, show this message
-                  <p>No shoe recommendation with this combination</p>
-                ) : (
-                  // Otherwise, display the equivalent sizes
-                  ["UK", "USM", "USW", "EU", "CM"].map((type) => (
-                    <p key={type}>
-                      <span
-                        style={{
-                          textDecoration:
-                            type === selectedSizeType ? "underline" : "none",
-                        }}
-                      >
-                        {type}: {displayEquivalents[type] || "N/A"}
-                      </span>
-                    </p>
-                  ))
-                )}
-              </div>
+                {selectedBrand} {selectedModel} {selectedSizeType}{" "}
+                {selectedSize}
+              </p>
+              <div className="final-border-line"></div>
 
-              <h4>
-                Previous climbing shoes: {selectedBrand} {selectedModel}{" "}
-                {selectedSizeType} {selectedSize}
-                <br />
-                New Tenaya climbing shoes: {recommendedModel}
-              </h4>
+              <p className="final-inner-prompt" style={{ fontSize: "18px" }}>
+                Your recommended size for:{" "}
+              </p>
+              <p className="final-outer-prompt" style={{ marginTop: "15px" }}>
+                TENAYA {selectedTenayaModel}
+              </p>
+              <div className="image-and-table">
+                <img
+                  src={
+                    brands.Tenaya.models.find(
+                      (model) => model.name === selectedTenayaModel
+                    )?.image
+                  }
+                  alt={selectedTenayaModel}
+                  className="model-image"
+                />
+                <div>
+                  {Object.keys(displayEquivalents).length === 0 ||
+                  Object.values(displayEquivalents).every(
+                    (size) => !size || size === "N/A"
+                  ) ? (
+                    <p
+                      className="final-inner-prompt"
+                      style={{ fontWeight: "bolder", fontSize: "18px" }}
+                    >
+                      No shoe recommendation with this combination
+                    </p>
+                  ) : (
+                    <table className="size-table">
+                      <tbody>
+                        {["UK", "USM", "USW", "EU", "CM"].map((type) => (
+                          <tr key={type}>
+                            <td>{type}</td>
+                            <td>{displayEquivalents[type] || "N/A"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              </div>
             </section>
           )}
         </div>
       )}
       {currentSection === "street" && (
         <div>
-          <section className="section">
-            <h3>Select Size Type</h3>
-            <div className="options">
+          <section className="step-container">
+            <p className="step-outer-prompt">Step 2</p>
+            <p className="step-inner-prompt">
+              Select your regional sizing preference.
+            </p>
+            <div className="size-type">
               {sizeTypes.map((sizeType) => (
                 <button
                   key={sizeType}
-                  className={`option ${
-                    selectedSizeType === sizeType ? "selected" : ""
+                  className={`${
+                    selectedSizeType === sizeType
+                      ? "selected"
+                      : selectedSizeType !== null
+                      ? "unselected"
+                      : ""
                   }`}
                   onClick={() => handleSizeTypeClick(sizeType)}
                 >
@@ -363,39 +409,55 @@ const App = () => {
           </section>
 
           {selectedSizeType && (
-            <section className="section">
-              <h3>Size</h3>
+            <section className="step-container">
+              <p className="step-outer-prompt">Step 3</p>
+              <p className="step-inner-prompt">Select your size.</p>
               {renderSizes()}
             </section>
           )}
 
           {selectedSize && (
-            <section className="section">
-              <h3>Select Your Tenaya Model</h3>
-              <div className="options">
-                {brands.Tenaya.map((model) => (
+            <section className="step-container">
+              <p className="step-outer-prompt">Step 4</p>
+              <p className="step-inner-prompt">
+                Please select the Tenaya model that piques your interest.
+              </p>
+              <div className="brand-model">
+                {brands.Tenaya.models.map((model) => (
                   <button
-                    key={model}
-                    className={`option ${
-                      recommendedModel === model ? "selected" : ""
+                    key={model.name}
+                    className={`${
+                      selectedTenayaModel === model.name
+                        ? "selected"
+                        : selectedTenayaModel !== null
+                        ? "unselected"
+                        : ""
                     }`}
-                    onClick={() => handleTenayaModelClick(model)}
+                    onClick={() => handleTenayaModelClick(model.name)}
                   >
-                    {model}
+                    <img
+                      src={model.image}
+                      alt={model.name}
+                      className="model-logo"
+                    />
+                    <p className="model-name">{model.name}</p>
                   </button>
                 ))}
               </div>
             </section>
           )}
 
-          {recommendedModel && (
-            <section className="section">
-              <h3>Select Comfort Option</h3>
-              <div className="options">
+          {selectedTenayaModel && (
+            <section className="step-container">
+              <p className="step-outer-prompt">Step 5</p>
+              <p className="step-inner-prompt">
+                Please select your comport level.
+              </p>
+              <div className="comfort-options">
                 {comfortOptions.map((option) => (
                   <button
                     key={option}
-                    className={`option ${
+                    className={`${
                       selectedComfortOption === option ? "selected" : ""
                     }`}
                     onClick={() => handleComfortOptionClick(option)}
@@ -408,49 +470,66 @@ const App = () => {
           )}
 
           {selectedComfortOption && (
-            <section className="section">
-              <h3>Your recommended size: Tenaya {recommendedModel}</h3>
-              <div
-                style={{
-                  backgroundColor: "#333",
-                  color: "white",
-                  padding: "10px",
-                  borderRadius: "8px",
-                  width: "calc(25% - 40px)",
-                  height: "calc(25% - 40px)",
-                  boxSizing: "border-box",
-                }}
-              >
-                {Object.keys(displayEquivalents).length === 0 ||
-                Object.values(displayEquivalents).every(
-                  (size) => !size || size === "N/A"
-                ) ? (
-                  // If no valid sizes are found, show this message
-                  <p>No shoe recommendation with this combination</p>
-                ) : (
-                  // Otherwise, display the equivalent sizes
-                  ["UK", "USM", "USW", "EU", "CM"].map((type) => (
-                    <p key={type}>
-                      <span
-                        style={{
-                          textDecoration:
-                            type === selectedSizeType ? "underline" : "none",
-                        }}
-                      >
-                        {type}: {displayEquivalents[type] || "N/A"}
-                      </span>
-                    </p>
-                  ))
-                )}
-              </div>
+            <section className="final-container">
+              <p className="final-outer-prompt">
+                HERE&apos;S OUR SIZING RECOMMENDATION.
+              </p>
+              <p className="final-inner-prompt">
+                Street shoe:{" "}
+                <span style={{ fontSize: "18px", fontWeight: "bolder" }}>
+                  {selectedSizeType} {selectedSize}
+                </span>
+              </p>
 
-              <h4>
-                Street shoe: {selectedSizeType} {selectedSize}
-                <br />
-                New Tenaya model: {recommendedModel}
-                <br />
-                Comfort Option: {selectedComfortOption}
-              </h4>
+              <p className="step-inner-prompt">
+                Comfort Option:{" "}
+                <span style={{ fontSize: "18px", fontWeight: "bolder" }}>
+                  {selectedComfortOption}
+                </span>
+              </p>
+              <div className="final-border-line"></div>
+              <p className="final-inner-prompt" style={{ fontSize: "18px" }}>
+                Your recommended size for:{" "}
+              </p>
+              <p className="final-outer-prompt" style={{ marginTop: "15px" }}>
+                TENAYA {selectedTenayaModel}
+              </p>
+
+              <div className="image-and-table">
+                <img
+                  src={
+                    brands.Tenaya.models.find(
+                      (model) => model.name === selectedTenayaModel
+                    )?.image
+                  }
+                  alt={selectedTenayaModel}
+                  className="model-image"
+                />
+                <div>
+                  {Object.keys(displayEquivalents).length === 0 ||
+                  Object.values(displayEquivalents).every(
+                    (size) => !size || size === "N/A"
+                  ) ? (
+                    <p
+                      className="final-inner-prompt"
+                      style={{ fontWeight: "bolder", fontSize: "18px" }}
+                    >
+                      No shoe recommendation with this combination
+                    </p>
+                  ) : (
+                    <table className="size-table">
+                      <tbody>
+                        {["UK", "USM", "USW", "EU", "CM"].map((type) => (
+                          <tr key={type}>
+                            <td>{type}</td>
+                            <td>{displayEquivalents[type] || "N/A"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              </div>
             </section>
           )}
         </div>

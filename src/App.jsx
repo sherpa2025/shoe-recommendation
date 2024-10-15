@@ -7,7 +7,7 @@ import {
   getStreetRecommendation,
 } from "./shoeRecommendationLogic";
 
-import tenayaLogo from "./assets/tenaya/tenaya-logo.png";
+import tenayaLogo from "../public/assets/tenaya/tenaya-logo.png";
 
 const App = () => {
   const [selectedBrand, setSelectedBrand] = useState(null);
@@ -145,7 +145,7 @@ const App = () => {
   return (
     <div className="app">
       <div className="navbar">
-        <img src={tenayaLogo} alt="Tenay Logo" className="navbar-image" />
+        <img src={tenayaLogo} alt="Tenaya Logo" className="navbar-image" />
       </div>
       <div className="navbar-prompt">
         <p>
@@ -163,13 +163,25 @@ const App = () => {
         <div className="toggle-buttons">
           <button
             onClick={handleClimbingSectionClick}
-            className={currentSection === "climbing" ? "selected" : ""}
+            className={`${
+              currentSection === "climbing"
+                ? "selected"
+                : currentSection !== null
+                ? "unselected"
+                : ""
+            }`}
           >
             PREVIOUS CLIMBING SHOE
           </button>
           <button
             onClick={handleStreetSectionClick}
-            className={currentSection === "street" ? "selected" : ""}
+            className={`${
+              currentSection === "street"
+                ? "selected"
+                : currentSection !== null
+                ? "unselected"
+                : ""
+            }`}
           >
             STREET SHOE SIZE
           </button>
@@ -187,8 +199,12 @@ const App = () => {
               {Object.keys(brands).map((brand) => (
                 <button
                   key={brand}
-                  className={`brand-option ${
-                    selectedBrand === brand ? "selected" : ""
+                  className={`${
+                    selectedBrand === brand
+                      ? "selected"
+                      : selectedBrand !== null
+                      ? "unselected"
+                      : ""
                   }`}
                   onClick={() => handleBrandClick(brand)}
                 >
@@ -203,18 +219,31 @@ const App = () => {
           </section>
 
           {selectedBrand && (
-            <section className="section">
-              <h3>Select your previous model of {selectedBrand}</h3>
-              <div className="options">
-                {brands[selectedBrand].map((model) => (
+            <section className="step-container">
+              <p className="step-outer-prompt">Step 3</p>
+              <p className="step-inner-prompt">
+                Please select the {selectedBrand} model you wore previously.
+              </p>
+
+              <div className="brand-model">
+                {brands[selectedBrand].models.map((model) => (
                   <button
-                    key={model}
+                    key={model.name}
                     className={`option ${
-                      selectedModel === model ? "selected" : ""
+                      selectedModel === model.name
+                        ? "selected"
+                        : selectedModel !== null
+                        ? "unselected"
+                        : ""
                     }`}
-                    onClick={() => handleModelClick(model)}
+                    onClick={() => handleModelClick(model.name)}
                   >
-                    {model}
+                    <img
+                      src={model.image}
+                      alt={model.name}
+                      className="model-logo"
+                    />
+                    <span>{model.name}</span>
                   </button>
                 ))}
               </div>

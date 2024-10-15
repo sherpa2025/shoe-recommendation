@@ -32,7 +32,7 @@ const getRecommendation = (userUkSize, adjustmentData, chosenBrand) => {
 
 // Recommendation data based on previous climbing shoe
 const recommendationData = {
-  sportiva: {
+  "la sportiva": {
     oasi: "0",
     "oasi lv": "0",
     iati: "0",

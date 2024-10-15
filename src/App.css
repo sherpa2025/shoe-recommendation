@@ -71,30 +71,125 @@ body {
   border-color: #00bfff;
 }
 
+.toggle-buttons button.unselected {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.8)
+  );
+  opacity: 0.7;
+}
+
 .brand-options {
   display: flex;
   gap: 15px;
-  margin-bottom: 20px;
+  margin-top: 15px;
 }
 
-.brand-option {
+.brand-options button {
   background-color: #fff;
-  border: 1px solid #ccc;
-  padding: 10px;
+  border: 2px dashed black;
+  padding: 0 5px 0 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: border-color 0.3s ease;
 }
 
-.brand-option:hover {
-  background-color: #f0f0f0;
+.brand-options button:hover {
+  border-color: #00bfff;
 }
 
 .brand-logo {
-  width: 50px;
+  width: 80px;
   height: auto;
 }
-.brand-option button.selected {
-  border: 2px solid #007bff; /* Highlight the selected brand */
+.brand-options button.selected {
+  border: 2px solid #00bfff; /* Highlight the selected brand */
+}
+
+.brand-options button.unselected {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.8)
+  );
+  opacity: 0.7;
+}
+
+.brand-model {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr); /* 8 models per row on large screens */
+  gap: 15px; /* Space between buttons */
+  margin-top: 20px;
+}
+
+.brand-model button {
+  background-color: #fff;
+  border: none; /* Remove any default borders */
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+  position: relative; /* Required for the right border */
+}
+
+.brand-model button:hover {
+  border-bottom: 5px solid #00bfff; /* Highlight the selected brand */
+}
+
+.brand-model button.option.selected {
+  border-bottom: 5px solid #00bfff; /* Highlight the selected brand */
+}
+
+.brand-model button.unselected {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.8)
+  );
+  opacity: 0.7;
+}
+
+.model-logo {
+  width: 100px; /* Adjust image size */
+  height: auto;
+  margin-bottom: 10px;
+}
+
+/* Add right border only */
+.brand-model button:not(:last-child) {
+  border-right: 2px solid black; /* Add solid border on the right side, except the last button in each row */
+}
+
+@media (max-width: 1200px) {
+  .brand-model {
+    grid-template-columns: repeat(
+      6,
+      1fr
+    ); /* 6 models per row on medium screens */
+  }
+}
+
+@media (max-width: 900px) {
+  .brand-model {
+    grid-template-columns: repeat(
+      4,
+      1fr
+    ); /* 4 models per row on smaller screens */
+  }
+}
+
+@media (max-width: 600px) {
+  .brand-model {
+    grid-template-columns: repeat(
+      2,
+      1fr
+    ); /* 2 models per row on small screens */
+  }
+}
+
+@media (max-width: 400px) {
+  .brand-model {
+    grid-template-columns: 1fr; /* 1 model per row on very small screens */
+  }
 }
 
 .section {

@@ -7,6 +7,8 @@ import {
   getStreetRecommendation,
 } from "./shoeRecommendationLogic";
 
+import tenayaLogo from "./assets/tenaya/tenaya-logo.png";
+
 const App = () => {
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [selectedModel, setSelectedModel] = useState(null);
@@ -142,35 +144,59 @@ const App = () => {
 
   return (
     <div className="app">
-      <h4>
-        Follow these 6 simple steps to find the perfect fit for your Tenaya
-        climbing shoes
-      </h4>
-
-      {/* Toggle buttons */}
-      <div className="toggle-buttons">
-        <button onClick={handleClimbingSectionClick}>
-          According to the previous used climbing shoe
-        </button>
-        <button onClick={handleStreetSectionClick}>
-          According to street shoe
-        </button>
+      <div className="navbar">
+        <img src={tenayaLogo} alt="Tenay Logo" className="navbar-image" />
       </div>
+      <div className="navbar-prompt">
+        <p>
+          Follow these few simple steps to find the perfect fit for your Tenaya
+          climbing shoes.
+        </p>
+      </div>
+      <div className="border-line"></div>
+
+      <section className="step-container">
+        <p className="step-outer-prompt">Step 1</p>
+        <p className="step-inner-prompt">
+          Help us understand where to start. Will your fit be based on:
+        </p>
+        <div className="toggle-buttons">
+          <button
+            onClick={handleClimbingSectionClick}
+            className={currentSection === "climbing" ? "selected" : ""}
+          >
+            PREVIOUS CLIMBING SHOE
+          </button>
+          <button
+            onClick={handleStreetSectionClick}
+            className={currentSection === "street" ? "selected" : ""}
+          >
+            STREET SHOE SIZE
+          </button>
+        </div>
+      </section>
 
       {currentSection === "climbing" && (
         <div>
-          <section className="section">
-            <h3>Select brand of your previous model</h3>
-            <div className="options">
+          <section className="step-container">
+            <p className="step-outer-prompt">Step 2</p>
+            <p className="step-inner-prompt">
+              Select the brand of climbing you previously wore.
+            </p>
+            <div className="brand-options">
               {Object.keys(brands).map((brand) => (
                 <button
                   key={brand}
-                  className={`option ${
+                  className={`brand-option ${
                     selectedBrand === brand ? "selected" : ""
                   }`}
                   onClick={() => handleBrandClick(brand)}
                 >
-                  {brand}
+                  <img
+                    src={brands[brand].logoImage}
+                    alt={brand}
+                    className="brand-logo"
+                  />
                 </button>
               ))}
             </div>

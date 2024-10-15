@@ -1,3 +1,102 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif, Helvetica,
+    sans-serif, Times, serif;
+}
+.navbar {
+  background-color: black;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.navbar-image {
+  height: 80px;
+  width: auto;
+}
+
+.navbar-prompt {
+  margin: 20px;
+}
+
+.border-line {
+  border-bottom: 2px solid #778899;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.step-outer-prompt {
+  font-weight: bolder;
+  font-size: clamp(1.4rem, 2vw, 2.5rem);
+}
+.step-container {
+  position: relative;
+  padding-left: 15px;
+  border-left: 8px solid #dcdcdc;
+  margin: 15px 15px 0px 4px;
+}
+
+.step-inner-prompt {
+  font-size: 0.9rem;
+}
+
+.toggle-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.toggle-buttons button {
+  background-color: transparent;
+  font-weight: bolder;
+  padding: 5px 10px;
+  border: 2px solid black;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.toggle-buttons button:hover {
+  border-color: #00bfff;
+}
+
+.toggle-buttons button.selected {
+  border-color: #00bfff;
+}
+
+.brand-options {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.brand-option {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.brand-option:hover {
+  background-color: #f0f0f0;
+}
+
+.brand-logo {
+  width: 50px;
+  height: auto;
+}
+.brand-option button.selected {
+  border: 2px solid #007bff; /* Highlight the selected brand */
+}
+
 .section {
   margin-bottom: 20px;
 }

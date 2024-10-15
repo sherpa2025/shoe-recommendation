@@ -7,10 +7,13 @@
   padding-bottom: 80px;
 }
 html,
-body {
+body,
+p,
+span {
   height: 100%;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif, Helvetica,
     sans-serif, Times, serif;
+  color: black;
 }
 .navbar {
   background-color: black;

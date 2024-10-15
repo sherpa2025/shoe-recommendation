@@ -7,7 +7,7 @@ import {
   getStreetRecommendation,
 } from "./shoeRecommendationLogic";
 
-import tenayaLogo from "../public/assets/tenaya/tenaya-logo.png";
+import tenayaLogo from "/assets/tenaya/tenaya-logo.png";
 
 const App = () => {
   const [selectedBrand, setSelectedBrand] = useState(null);

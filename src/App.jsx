@@ -178,7 +178,7 @@ const App = () => {
                 : ""
             }`}
           >
-            PREVIOUS CLIMBING SHOE
+            <p>PREVIOUS CLIMBING SHOE</p>
           </button>
           <button
             onClick={handleStreetSectionClick}
@@ -190,7 +190,7 @@ const App = () => {
                 : ""
             }`}
           >
-            STREET SHOE SIZE
+            <p>STREET SHOE SIZE</p>
           </button>
         </div>
       </section>
@@ -276,7 +276,7 @@ const App = () => {
                     }`}
                     onClick={() => handleSizeTypeClick(sizeType)}
                   >
-                    {sizeType}
+                    <p>{sizeType}</p>
                   </button>
                 ))}
               </div>
@@ -286,8 +286,10 @@ const App = () => {
           {selectedSizeType && (
             <section className="step-container">
               <p className="step-outer-prompt">Step 5</p>
-              <p className="step-inner-prompt">Select your size.</p>
-              {renderSizes()}
+              <p className="step-inner-prompt">
+                Select your size.
+                {renderSizes()}
+              </p>
             </section>
           )}
 
@@ -402,7 +404,7 @@ const App = () => {
                   }`}
                   onClick={() => handleSizeTypeClick(sizeType)}
                 >
-                  {sizeType}
+                  <p>{sizeType}</p>
                 </button>
               ))}
             </div>
@@ -411,8 +413,10 @@ const App = () => {
           {selectedSizeType && (
             <section className="step-container">
               <p className="step-outer-prompt">Step 3</p>
-              <p className="step-inner-prompt">Select your size.</p>
-              {renderSizes()}
+              <p className="step-inner-prompt">
+                Select your size.
+                {renderSizes()}
+              </p>
             </section>
           )}
 
@@ -462,7 +466,7 @@ const App = () => {
                     }`}
                     onClick={() => handleComfortOptionClick(option)}
                   >
-                    {option}
+                    <p>{option}</p>
                   </button>
                 ))}
               </div>

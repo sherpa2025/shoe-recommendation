@@ -75,7 +75,6 @@ const App = () => {
     setRecommendedUkSize(null); // Clear previous parsed size
     setPreviousTenayaModel(null);
     setSelectedComfortOption(null);
-    setPreviousComfortOption(null);
   };
 
   // Use the UK size to get size equivalents for final recommendation shoe size
@@ -116,8 +115,7 @@ const App = () => {
           (currentSection === "climbing" &&
             selectedTenayaModel !== previousTenayaModel) ||
           (currentSection === "street" &&
-            (selectedComfortOption !== previousComfortOption ||
-              selectedTenayaModel !== previousTenayaModel))
+            selectedComfortOption !== previousComfortOption)
         ) {
           // Fetch recommendation based on section
           const recommendation =

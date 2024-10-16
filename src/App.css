@@ -209,6 +209,7 @@ span {
   margin-top: 15px;
   width: 90px;
   height: auto;
+  color: black;
 }
 
 .sizes select.selected {

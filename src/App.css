@@ -24,7 +24,7 @@ span {
 }
 
 .navbar-image {
-  height: 80px;
+  height: 100px;
   width: auto;
 }
 
@@ -122,7 +122,6 @@ span {
 .brand-model {
   display: grid;
   grid-template-columns: repeat(8, 1fr); /* 8 models per row on large screens */
-  gap: 15px; /* Space between buttons */
   margin-top: 20px;
 }
 
@@ -132,7 +131,8 @@ span {
   padding: 10px;
   cursor: pointer;
   text-align: center;
-  position: relative; /* Required for the right border */
+  position: relative;
+  margin-bottom: 15px;
 }
 
 .brand-model button:hover {
@@ -161,7 +161,7 @@ span {
   font-size: clamp(0.9rem, 1.1vw, 2rem);
 }
 .model-logo {
-  width: 80px;
+  width: 90px;
   height: auto;
   margin-bottom: 5px;
 }
@@ -328,35 +328,4 @@ span {
   .brand-model {
     grid-template-columns: 1fr;
   }
-}
-
-.section {
-  margin-bottom: 20px;
-}
-
-.options {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.sizes {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-  gap: 0;
-  justify-content: start;
-}
-
-.option,
-.size-option {
-  padding: 10px;
-  margin: 5px;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  text-align: center;
-}
-
-.option.selected,
-.size-option.selected {
-  border-color: #007bff;
-  background-color: #e7f0ff;
 }

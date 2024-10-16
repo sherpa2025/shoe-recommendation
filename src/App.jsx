@@ -137,7 +137,7 @@ const App = () => {
             </option>
             {sizes[selectedSizeType]?.map((size) => (
               <option key={size} value={size}>
-                {size}
+                <p>{size}</p>
               </option>
             ))}
           </select>

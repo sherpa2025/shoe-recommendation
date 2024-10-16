@@ -13,12 +13,14 @@ const App = () => {
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [selectedModel, setSelectedModel] = useState(null);
   const [selectedTenayaModel, setSelectedTenayaModel] = useState(null);
+  const [previousTenayaModel, setPreviousTenayaModel] = useState(null);
   const [selectedSizeType, setSelectedSizeType] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [userUkSize, setUserUkSize] = useState(null);
   const [recommendedUkSize, setRecommendedUkSize] = useState(null);
   const [currentSection, setCurrentSection] = useState(null);
   const [selectedComfortOption, setSelectedComfortOption] = useState(null);
+  const [previousComfortOption, setPreviousComfortOption] = useState(null);
 
   const resetStates = () => {
     setSelectedBrand(null);
@@ -28,6 +30,8 @@ const App = () => {
     setSelectedSize(null);
     setRecommendedUkSize(null);
     setSelectedComfortOption(null);
+    setPreviousTenayaModel(null);
+    setPreviousComfortOption(null);
   };
 
   const handleBrandClick = (brand) => {
@@ -36,6 +40,7 @@ const App = () => {
     setSelectedSizeType(null);
     setSelectedSize(null);
     setSelectedTenayaModel(null);
+    setPreviousTenayaModel(null);
   };
 
   const handleModelClick = (model) => {
@@ -43,13 +48,16 @@ const App = () => {
     setSelectedSizeType(null);
     setSelectedSize(null);
     setSelectedTenayaModel(null);
+    setPreviousTenayaModel(null);
   };
 
   const handleSizeTypeClick = (sizeType) => {
     setSelectedSizeType(sizeType);
     setSelectedSize(null);
     setSelectedTenayaModel(null);
+    setPreviousTenayaModel(null);
     setSelectedComfortOption(null);
+    setPreviousComfortOption(null);
   };
 
   const handleSizeClick = (size) => {
@@ -57,13 +65,17 @@ const App = () => {
     setSelectedSize(size);
     setUserUkSize(equivalents.UK); // Store the UK size
     setSelectedTenayaModel(null);
+    setPreviousTenayaModel(null);
     setSelectedComfortOption(null);
+    setPreviousComfortOption(null);
   };
 
   const handleTenayaModelClick = (model) => {
     setSelectedTenayaModel(model);
     setRecommendedUkSize(null); // Clear previous parsed size
+    setPreviousTenayaModel(null);
     setSelectedComfortOption(null);
+    setPreviousComfortOption(null);
   };
 
   // Use the UK size to get size equivalents for final recommendation shoe size
@@ -84,6 +96,7 @@ const App = () => {
   const handleComfortOptionClick = (option) => {
     setSelectedComfortOption(option);
     setRecommendedUkSize(null);
+    setPreviousComfortOption(null);
   };
 
   useEffect(() => {
@@ -98,19 +111,38 @@ const App = () => {
           userUkSize &&
           selectedComfortOption)
       ) {
-        const recommendation =
-          currentSection === "climbing"
-            ? getShoeRecommendation(
-                selectedBrand,
-                userUkSize,
-                selectedTenayaModel
-              )
-            : getStreetRecommendation(
-                selectedTenayaModel,
-                userUkSize,
-                selectedComfortOption
-              );
-        setRecommendedUkSize(recommendation.recommendedSize);
+        // Only fetch recommendation if the model or comfort option has changed
+        if (
+          (currentSection === "climbing" &&
+            selectedTenayaModel !== previousTenayaModel) ||
+          (currentSection === "street" &&
+            (selectedComfortOption !== previousComfortOption ||
+              selectedTenayaModel !== previousTenayaModel))
+        ) {
+          // Fetch recommendation based on section
+          const recommendation =
+            currentSection === "climbing"
+              ? getShoeRecommendation(
+                  selectedBrand,
+                  userUkSize,
+                  selectedTenayaModel
+                )
+              : getStreetRecommendation(
+                  selectedTenayaModel,
+                  userUkSize,
+                  selectedComfortOption
+                );
+
+          // Update the recommendation size
+          setRecommendedUkSize(recommendation.recommendedSize);
+
+          // Update the previous values accordingly
+          if (currentSection === "climbing") {
+            setPreviousTenayaModel(selectedTenayaModel);
+          } else if (currentSection === "street") {
+            setPreviousComfortOption(selectedComfortOption);
+          }
+        }
       }
     };
 
@@ -121,6 +153,8 @@ const App = () => {
     selectedBrand,
     selectedComfortOption,
     currentSection,
+    previousTenayaModel,
+    previousComfortOption,
   ]);
 
   const renderSizes = () => {
@@ -137,7 +171,7 @@ const App = () => {
             </option>
             {sizes[selectedSizeType]?.map((size) => (
               <option key={size} value={size}>
-                {size}
+                <p>{size}</p>
               </option>
             ))}
           </select>

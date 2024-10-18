@@ -35,27 +35,28 @@ export const brands = {
   Tenaya: {
     logoImage: "/assets/tenaya/tenaya.webp",
     models: [
-      { name: "Oasi", image: "/assets/tenaya/oasi.jpg" },
-      { name: "Oasi Lv", image: "/assets/tenaya/oasi-lv.jpg" },
-      { name: "Iati", image: "/assets/tenaya/iati.jpg" },
-      { name: "Tarifa", image: "/assets/tenaya/tarifa.jpg" },
-      { name: "Mundaka", image: "/assets/tenaya/mundaka.jpg" },
       { name: "Indalo", image: "/assets/tenaya/indalo.png" },
       { name: "Mastia", image: "/assets/tenaya/mastia.jpg" },
+      { name: "Mundaka", image: "/assets/tenaya/mundaka.jpg" },
+      { name: "Iati", image: "/assets/tenaya/iati.jpg" },
+      { name: "Oasi Lv", image: "/assets/tenaya/oasi-lv.jpg" },
+      { name: "Oasi", image: "/assets/tenaya/oasi.jpg" },
+      { name: "Tarifa", image: "/assets/tenaya/tarifa.jpg" },
       { name: "Ra", image: "/assets/tenaya/ra.jpg" },
       { name: "Ra Woman", image: "/assets/tenaya/ra-woman.jpg" },
       { name: "Inti", image: "/assets/tenaya/inti.jpg" },
       { name: "Masai", image: "/assets/tenaya/masai.jpg" },
-      { name: "Tanta", image: "/assets/tenaya/tanta.jpg" },
+      { name: "Tanta / Tanta Lace", image: "/assets/tenaya/tanta.jpg" },
+      { name: "Arai", image: "/assets/tenaya/arai.jpg" },
     ],
   },
 };
 
 export const comfortOptions = [
-  "Beginners",
-  "Prolonged Use",
-  "Comfort Fit",
-  "Tighter Fit",
+  "Beginner",
+  "Intermediate",
+  "Advanced",
+  "Competition",
 ];
 
 export const sizeTypes = ["UK", "USM", "USW", "EU", "CM"];

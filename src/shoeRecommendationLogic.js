@@ -44,7 +44,8 @@ const recommendationData = {
     "ra woman": "0.5",
     inti: "0.5",
     masai: "0.5",
-    tanta: "0",
+    "tanta / tanta lace": "0",
+    arai: "0",
   },
   scarpa: {
     oasi: "-1",
@@ -58,7 +59,8 @@ const recommendationData = {
     "ra woman": "-0.5",
     inti: "-0.5",
     masai: "-0.5",
-    tanta: "-1",
+    "tanta / tanta lace": "-1",
+    arai: "-1",
   },
   tenaya: {
     oasi: "0",
@@ -72,13 +74,14 @@ const recommendationData = {
     "ra woman": "0.5",
     inti: "0.5",
     masai: "0.5",
-    tanta: "0",
+    "tanta / tanta lace": "0",
+    arai: "0",
   },
 };
 
 // Street recommendation data
 const streetRecommendationData = {
-  beginners: {
+  beginner: {
     oasi: "0",
     "oasi lv": "0",
     iati: "0",
@@ -90,9 +93,10 @@ const streetRecommendationData = {
     "ra woman": "0.5",
     inti: "0.5",
     masai: "0.5",
-    tanta: "0.5",
+    "tanta / tanta lace": "0.5",
+    arai: "0.5",
   },
-  "prolonged use": {
+  intermediate: {
     oasi: "-0.5",
     "oasi lv": "-0.5",
     iati: "-0.5",
@@ -104,9 +108,10 @@ const streetRecommendationData = {
     "ra woman": "0",
     inti: "0",
     masai: "0",
-    tanta: "0",
+    "tanta / tanta lace": "0",
+    arai: "0",
   },
-  "comfort fit": {
+  advanced: {
     oasi: "-1",
     "oasi lv": "-1",
     iati: "-1",
@@ -118,9 +123,10 @@ const streetRecommendationData = {
     "ra woman": "-0.5",
     inti: "-0.5",
     masai: "-0.5",
-    tanta: "-0.5",
+    "tanta / tanta lace": "-0.5",
+    arai: "-0.5",
   },
-  "tighter fit": {
+  competition: {
     oasi: "-1.5",
     "oasi lv": "-1.5",
     iati: "-1.5",
@@ -132,7 +138,8 @@ const streetRecommendationData = {
     "ra woman": "-1",
     inti: "-1",
     masai: "-1",
-    tanta: "-1",
+    "tanta / tanta lace": "-1",
+    arai: "-1",
   },
 };
 

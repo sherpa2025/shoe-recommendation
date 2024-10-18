@@ -295,7 +295,7 @@ const App = () => {
               <p className="step-inner-prompt">
                 Select your regional sizing preference.
               </p>
-              <div className="size-type">
+              <div className="selection-item">
                 {sizeTypes.map((sizeType) => (
                   <button
                     key={sizeType}
@@ -329,7 +329,7 @@ const App = () => {
             <section className="step-container">
               <p className="step-outer-prompt">Step 6</p>
               <p className="step-inner-prompt">
-                Please select the Tenaya model that piques your interest.
+                Please select your desired Tenaya model.
               </p>
               <div className="brand-model">
                 {brands.Tenaya.models.map((model) => (
@@ -423,7 +423,7 @@ const App = () => {
             <p className="step-inner-prompt">
               Select your regional sizing preference.
             </p>
-            <div className="size-type">
+            <div className="selection-item">
               {sizeTypes.map((sizeType) => (
                 <button
                   key={sizeType}
@@ -456,7 +456,7 @@ const App = () => {
             <section className="step-container">
               <p className="step-outer-prompt">Step 4</p>
               <p className="step-inner-prompt">
-                Please select the Tenaya model that piques your interest.
+                Please select your desired Tenaya model.
               </p>
               <div className="brand-model">
                 {brands.Tenaya.models.map((model) => (
@@ -487,14 +487,18 @@ const App = () => {
             <section className="step-container">
               <p className="step-outer-prompt">Step 5</p>
               <p className="step-inner-prompt">
-                Please select your comport level.
+                Please select your comfort/performance level.
               </p>
-              <div className="comfort-options">
+              <div className="selection-item">
                 {comfortOptions.map((option) => (
                   <button
                     key={option}
                     className={`${
-                      selectedComfortOption === option ? "selected" : ""
+                      selectedComfortOption === option
+                        ? "selected"
+                        : selectedComfortOption !== null
+                        ? "unselected"
+                        : ""
                     }`}
                     onClick={() => handleComfortOptionClick(option)}
                   >

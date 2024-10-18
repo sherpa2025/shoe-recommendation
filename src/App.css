@@ -26,6 +26,8 @@ span {
 .navbar-image {
   height: 100px;
   width: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .navbar-prompt {
@@ -166,31 +168,32 @@ span {
   margin-bottom: 5px;
 }
 
-.size-type {
+.selection-item {
   display: flex;
+  flex-wrap: wrap;
   gap: 15px;
   margin-top: 15px;
 }
 
-.size-type button {
+.selection-item button {
   background-color: #fff;
   border: 2px dashed black;
-  padding: 15px;
+  padding: 13px;
   cursor: pointer;
   transition: border-color 0.3s ease;
   font-weight: bolder;
-  font-size: clamp(1rem, 1.2vw, 1.8rem);
+  font-size: 1.4rem;
 }
 
-.size-type button:hover {
+.selection-item button:hover {
   border-color: #00bfff;
 }
 
-.size-type button.selected {
+.selection-item button.selected {
   border: 2px solid #00bfff; /* Highlight the selected brand */
 }
 
-.size-type button.unselected {
+.selection-item button.unselected {
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0.6),
@@ -274,42 +277,13 @@ span {
   background-color: #dcdcdc; /* Light gray background for odd rows */
 }
 
-.comfort-options {
-  display: flex;
-  gap: 15px;
-  margin-top: 15px;
-}
-
-.comfort-options button {
-  background-color: #fff;
-  border: 2px dashed black;
-  padding: 15px;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
-  font-size: clamp(1rem, 1.2vw, 1.8rem);
-  font-weight: bolder;
-}
-
-.comfort-options button:hover {
-  border-color: #00bfff;
-}
-
-.comfort-options button.selected {
-  border: 2px solid #00bfff; /* Highlight the selected brand */
-}
-
-.comfort-options button.unselected {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.6),
-    rgba(255, 255, 255, 0.8)
-  );
-  opacity: 0.7;
-}
-
 @media (max-width: 1200px) {
   .brand-model {
     grid-template-columns: repeat(6, 1fr);
+  }
+  .selection-item botton {
+    padding: 12px;
+    font-size: 1.4rem;
   }
 }
 
@@ -317,16 +291,34 @@ span {
   .brand-model {
     grid-template-columns: repeat(4, 1fr);
   }
+  .selection-item button {
+    padding: 10px;
+    font-size: 1.3rem;
+  }
 }
 
 @media (max-width: 600px) {
   .brand-model {
     grid-template-columns: repeat(2, 1fr);
   }
+  .selection-item {
+    gap: 13px;
+  }
+  .selection-item button {
+    padding: 13px;
+    font-size: 1.2rem;
+  }
 }
 
 @media (max-width: 400px) {
   .brand-model {
     grid-template-columns: 1fr;
+  }
+  .selection-item {
+    gap: 10px;
+  }
+  .selection-item button {
+    padding: 10px;
+    font-size: 1rem;
   }
 }

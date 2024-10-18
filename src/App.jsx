@@ -295,7 +295,7 @@ const App = () => {
               <p className="step-inner-prompt">
                 Select your regional sizing preference.
               </p>
-              <div className="size-type">
+              <div className="selection-item">
                 {sizeTypes.map((sizeType) => (
                   <button
                     key={sizeType}
@@ -423,7 +423,7 @@ const App = () => {
             <p className="step-inner-prompt">
               Select your regional sizing preference.
             </p>
-            <div className="size-type">
+            <div className="selection-item">
               {sizeTypes.map((sizeType) => (
                 <button
                   key={sizeType}
@@ -487,14 +487,18 @@ const App = () => {
             <section className="step-container">
               <p className="step-outer-prompt">Step 5</p>
               <p className="step-inner-prompt">
-                Please select your comport/performance level.
+                Please select your comfort/performance level.
               </p>
-              <div className="comfort-options">
+              <div className="selection-item">
                 {comfortOptions.map((option) => (
                   <button
                     key={option}
                     className={`${
-                      selectedComfortOption === option ? "selected" : ""
+                      selectedComfortOption === option
+                        ? "selected"
+                        : selectedComfortOption !== null
+                        ? "unselected"
+                        : ""
                     }`}
                     onClick={() => handleComfortOptionClick(option)}
                   >

@@ -329,7 +329,7 @@ const App = () => {
             <section className="step-container">
               <p className="step-outer-prompt">Step 6</p>
               <p className="step-inner-prompt">
-                Please select the Tenaya model that piques your interest.
+                Please select your desired Tenaya model.
               </p>
               <div className="brand-model">
                 {brands.Tenaya.models.map((model) => (
@@ -456,7 +456,7 @@ const App = () => {
             <section className="step-container">
               <p className="step-outer-prompt">Step 4</p>
               <p className="step-inner-prompt">
-                Please select the Tenaya model that piques your interest.
+                Please select your desired Tenaya model.
               </p>
               <div className="brand-model">
                 {brands.Tenaya.models.map((model) => (
@@ -487,7 +487,7 @@ const App = () => {
             <section className="step-container">
               <p className="step-outer-prompt">Step 5</p>
               <p className="step-inner-prompt">
-                Please select your comport level.
+                Please select your comport/performance level.
               </p>
               <div className="comfort-options">
                 {comfortOptions.map((option) => (

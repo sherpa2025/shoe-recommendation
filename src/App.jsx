@@ -210,7 +210,7 @@ const App = () => {
                 : ""
             }`}
           >
-            <p>PREVIOUS CLIMBING SHOE</p>
+            <p>CURRENT CLIMBING SHOE</p>
           </button>
           <button
             onClick={handleStreetSectionClick}
